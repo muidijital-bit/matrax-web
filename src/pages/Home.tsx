@@ -31,12 +31,12 @@ const HeroSlider = () => {
         />
       )}
 
-      {/* Üstten aşağıya koyulaşan overlay — üstte beyaz (nav okunurluk), altta siyah (yazı okunurluk) */}
+      {/* Üstten aşağıya overlay — üstte koyu (nav okunurluk), altta siyah (yazı okunurluk) */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            'linear-gradient(to bottom, rgba(255,255,255,0.45) 0%, rgba(255,255,255,0.10) 10%, rgba(0,0,0,0) 25%, rgba(0,0,0,0.25) 45%, rgba(0,0,0,0.55) 60%, rgba(0,0,0,0.78) 75%, rgba(0,0,0,0.92) 100%)',
+            'linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.30) 15%, rgba(0,0,0,0) 30%, rgba(0,0,0,0.25) 50%, rgba(0,0,0,0.60) 65%, rgba(0,0,0,0.82) 80%, rgba(0,0,0,0.92) 100%)',
         }}
       />
 

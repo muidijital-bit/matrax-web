@@ -263,7 +263,7 @@ const Layout = () => {
               src="/images/logo.png?v=4"
               alt="Matrax Oyun Grupları Logo"
               className={`h-16 md:h-[88px] w-auto object-contain transition-all duration-500 ${
-                isDark ? 'drop-shadow-[0_2px_10px_rgba(0,0,0,0.55)]' : ''
+                isDark ? 'drop-shadow-[0_2px_16px_rgba(255,255,255,0.6)]' : ''
               }`}
             />
           </Link>
@@ -276,13 +276,13 @@ const Layout = () => {
               to="/iletisim"
               className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-bold text-sm transition-all hover:scale-105 ${
                 isDark
-                  ? 'bg-white/15 border border-white/25 text-white hover:bg-white/25 backdrop-blur-sm'
+                  ? 'bg-green-500/30 border border-green-400/40 text-white hover:bg-green-500/50 backdrop-blur-sm'
                   : 'bg-neon-green text-white hover:shadow-lg hover:shadow-brand-green/30'
               }`}
             >
               <Phone size={13} /> İletişim
             </Link>
-            <LangSwitcher dark={isDark} />
+            {/* <LangSwitcher dark={isDark} /> */}
             <button
               onClick={() => setSearchOpen(o => !o)}
               aria-label="Ara"
@@ -374,9 +374,9 @@ const Layout = () => {
                 <Phone size={13} /> İletişim
               </Link>
 
-              <div className="mt-3 flex justify-start">
+              {/* <div className="mt-3 flex justify-start">
                 <LangSwitcher dark={isDark} />
-              </div>
+              </div> */}
             </motion.div>
           )}
         </AnimatePresence>
@@ -544,6 +544,7 @@ const Layout = () => {
           <div className="pt-6 flex flex-col md:flex-row items-center justify-between gap-3">
             <p className="text-slate-400 font-bold text-xs">© {new Date().getFullYear()} Matrax Oyun Grupları. Tüm hakları saklıdır.</p>
             <p className="text-slate-500 font-bold text-xs">Anahtar teslim üretim · Türkiye geneli kurulum</p>
+            <p className="text-slate-600 text-xs">Created by <a href="https://muimedya.com" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">muimedya.com</a></p>
           </div>
         </div>
       </footer>
