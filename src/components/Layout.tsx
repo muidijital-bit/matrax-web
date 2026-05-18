@@ -15,32 +15,6 @@ const IconYoutube = () => (
   </svg>
 );
 
-const FlagTR = () => (
-  <svg viewBox="0 0 60 40" className="w-[18px] h-[12px] rounded-sm shadow-sm flex-shrink-0">
-    <rect width="60" height="40" fill="#E30A17"/>
-    <circle cx="22" cy="20" r="8" fill="#fff"/>
-    <circle cx="24.5" cy="20" r="6.4" fill="#E30A17"/>
-    <polygon fill="#fff" points="32.5,20 28.2,21.4 30.86,17.74 30.86,22.26 28.2,18.6"/>
-  </svg>
-);
-const FlagEN = () => (
-  <svg viewBox="0 0 60 30" className="w-[18px] h-[12px] rounded-sm shadow-sm flex-shrink-0 overflow-hidden">
-    <clipPath id="uk-s">
-      <path d="M30,15 h30 v15 z v-15 h-30 z h-30 v-15 z v15 h30 z" />
-    </clipPath>
-    <path d="M0,0 v30 h60 v-30 z" fill="#012169" />
-    <path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" strokeWidth="6" />
-    <path d="M0,0 L60,30 M60,0 L0,30" clipPath="url(#uk-s)" stroke="#C8102E" strokeWidth="4" />
-    <path d="M30,0 v30 M0,15 h60" stroke="#fff" strokeWidth="10" />
-    <path d="M30,0 v30 M0,15 h60" stroke="#C8102E" strokeWidth="6" />
-  </svg>
-);
-
-const langs = [
-  { code: 'TR', flag: <FlagTR />, label: 'Türkçe' },
-  { code: 'EN', flag: <FlagEN />, label: 'English' },
-];
-
 // LangSwitcher geçici olarak devre dışı
 
 type NavItem = {
