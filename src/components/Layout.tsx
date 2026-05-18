@@ -41,40 +41,7 @@ const langs = [
   { code: 'EN', flag: <FlagEN />, label: 'English' },
 ];
 
-const LangSwitcher = ({ dark = false }: { dark?: boolean }) => {
-  const [active, setActive] = useState('TR');
-
-  const wrapCls = dark
-    ? 'bg-white/5 border-white/10'
-    : 'bg-slate-100 border-slate-200';
-
-  return (
-    <div className={`flex items-center gap-0.5 p-0.5 rounded-full border ${wrapCls}`}>
-      {langs.map(l => {
-        const isActive = active === l.code;
-        const activeCls = dark
-          ? 'bg-white text-slate-900'
-          : 'bg-slate-900 text-white';
-        const idleCls = dark
-          ? 'text-white/70 hover:text-white'
-          : 'text-slate-500 hover:text-slate-800';
-        return (
-          <button
-            key={l.code}
-            onClick={() => setActive(l.code)}
-            aria-label={l.label}
-            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full font-black text-[11px] transition-colors ${
-              isActive ? activeCls : idleCls
-            }`}
-          >
-            {l.flag}
-            <span>{l.code}</span>
-          </button>
-        );
-      })}
-    </div>
-  );
-};
+// LangSwitcher geçici olarak devre dışı
 
 type NavItem = {
   name: string;
