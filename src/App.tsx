@@ -3,6 +3,7 @@ import { lazy, Suspense } from 'react';
 import Layout from './components/Layout';
 import Home from './pages/Home'; // ana sayfa eager — LCP
 import { useSiteSettings } from './lib/useSiteSettings';
+import { ErrorBoundary } from './components/ErrorBoundary';
 
 // Diğer sayfalar lazy: ilk yükleme bundle'ını küçültür
 const Catalog = lazy(() => import('./pages/Catalog'));
@@ -46,17 +47,17 @@ function App() {
       {/* Ana site */}
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
-        <Route path="katalog" element={<Suspense fallback={<PageFallback />}><Catalog /></Suspense>} />
-        <Route path="katalog/:slug" element={<Suspense fallback={<PageFallback />}><ProductDetail /></Suspense>} />
-        <Route path="projeler" element={<Suspense fallback={<PageFallback />}><Projects /></Suspense>} />
-        <Route path="imalat" element={<Suspense fallback={<PageFallback />}><Imalat /></Suspense>} />
-        <Route path="galeri" element={<Suspense fallback={<PageFallback />}><Galeri /></Suspense>} />
-        <Route path="yedek-parcalar" element={<Suspense fallback={<PageFallback />}><YedekParcalar /></Suspense>} />
-        <Route path="hakkimizda" element={<Suspense fallback={<PageFallback />}><About /></Suspense>} />
-        <Route path="kvkk" element={<Suspense fallback={<PageFallback />}><Kvkk /></Suspense>} />
-        <Route path="cerez-politikasi" element={<Suspense fallback={<PageFallback />}><CerezPolitikasi /></Suspense>} />
-        <Route path="iletisim" element={<Suspense fallback={<PageFallback />}><Contact /></Suspense>} />
-        <Route path="blog" element={<Suspense fallback={<PageFallback />}><Blog /></Suspense>} />
+        <Route path="katalog" element={<ErrorBoundary><Suspense fallback={<PageFallback />}><Catalog /></Suspense></ErrorBoundary>} />
+        <Route path="katalog/:slug" element={<ErrorBoundary><Suspense fallback={<PageFallback />}><ProductDetail /></Suspense></ErrorBoundary>} />
+        <Route path="projeler" element={<ErrorBoundary><Suspense fallback={<PageFallback />}><Projects /></Suspense></ErrorBoundary>} />
+        <Route path="imalat" element={<ErrorBoundary><Suspense fallback={<PageFallback />}><Imalat /></Suspense></ErrorBoundary>} />
+        <Route path="galeri" element={<ErrorBoundary><Suspense fallback={<PageFallback />}><Galeri /></Suspense></ErrorBoundary>} />
+        <Route path="yedek-parcalar" element={<ErrorBoundary><Suspense fallback={<PageFallback />}><YedekParcalar /></Suspense></ErrorBoundary>} />
+        <Route path="hakkimizda" element={<ErrorBoundary><Suspense fallback={<PageFallback />}><About /></Suspense></ErrorBoundary>} />
+        <Route path="kvkk" element={<ErrorBoundary><Suspense fallback={<PageFallback />}><Kvkk /></Suspense></ErrorBoundary>} />
+        <Route path="cerez-politikasi" element={<ErrorBoundary><Suspense fallback={<PageFallback />}><CerezPolitikasi /></Suspense></ErrorBoundary>} />
+        <Route path="iletisim" element={<ErrorBoundary><Suspense fallback={<PageFallback />}><Contact /></Suspense></ErrorBoundary>} />
+        <Route path="blog" element={<ErrorBoundary><Suspense fallback={<PageFallback />}><Blog /></Suspense></ErrorBoundary>} />
       </Route>
 
       {/* Admin — login */}
