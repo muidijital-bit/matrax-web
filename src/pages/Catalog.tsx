@@ -175,15 +175,16 @@ const Catalog = () => {
       .filter(g => g.items.length > 0);
     const multi = all.filter(g => g.items.length >= 2);
     const singles = all.filter(g => g.items.length === 1).flatMap(g => g.items);
+    // Alt kategoriye giremeyen ürünler (slug eşleşmeyenler)
+    const unmatched = items.filter(p => subKeyFor(p) === null);
 
     const result: { key: string; label: string; items: Product[] }[] = [...multi];
-    if (singles.length > 0) {
-      const sortedSingles = [...singles].sort(smartSort);
+    const extraItems = [...singles, ...unmatched].sort(smartSort);
+    if (extraItems.length > 0) {
       if (multi.length === 0) {
-        // Hepsi tek-ürün → tek liste, başlıksız
-        result.push({ key: '__flat__', label: '', items: sortedSingles });
+        result.push({ key: '__flat__', label: '', items: extraItems });
       } else {
-        result.push({ key: '__other__', label: 'Diğer Modeller', items: sortedSingles });
+        result.push({ key: '__other__', label: 'Diğer Modeller', items: extraItems });
       }
     }
     return result;
