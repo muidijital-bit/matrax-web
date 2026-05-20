@@ -186,14 +186,14 @@ const ProductDetail = () => {
               <>
                 <button
                   onClick={(e) => { e.stopPropagation(); setActiveImg(i => (i - 1 + displayImages.length) % displayImages.length); }}
-                  className="lg:hidden absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-md"
+                  className="lg:hidden absolute left-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-md"
                   aria-label="Önceki"
                 >
                   <ChevronLeft size={20} className="text-slate-700" />
                 </button>
                 <button
                   onClick={(e) => { e.stopPropagation(); setActiveImg(i => (i + 1) % displayImages.length); }}
-                  className="lg:hidden absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-md"
+                  className="lg:hidden absolute right-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-md"
                   aria-label="Sonraki"
                 >
                   <ChevronRight size={20} className="text-slate-700" />
@@ -348,7 +348,7 @@ const ProductDetail = () => {
       </AnimatePresence>
 
       {/* Mobil sabit CTA bar */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-100 shadow-2xl px-4 py-3 flex gap-3">
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-100 shadow-2xl px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] flex gap-3">
         <a
           href="tel:+908501234567"
           className="flex-1 flex items-center justify-center gap-2 bg-slate-900 text-white font-black py-3.5 rounded-2xl text-sm"
