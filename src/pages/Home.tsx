@@ -24,8 +24,9 @@ const HeroSlider = () => {
       ) : (
         <img
           src={HERO_IMAGE}
-          alt=""
+          alt="Matrax Oyun Grupları — Trambolin Parkı"
           fetchPriority="high"
+          loading="eager"
           decoding="async"
           className="absolute inset-0 w-full h-full object-cover scale-105"
         />
@@ -519,18 +520,14 @@ const Home = () => {
 
             <div className="hidden md:block relative">
               <div className="relative w-full aspect-square">
-                <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 32, repeat: Infinity, ease: 'linear' }}
-                  className="absolute inset-0 flex items-center justify-center"
-                >
+                <div className="absolute inset-0 flex items-center justify-center">
                   <Wrench size={220} strokeWidth={1.2} className="text-white/10" />
-                </motion.div>
+                </div>
                 <div className="absolute inset-0 grid grid-cols-2 gap-3 p-4">
-                  <img src="/images/yedek-parca/yay-25cm.png" alt="" className="rounded-2xl bg-white/15 backdrop-blur-md p-3 object-contain" />
-                  <img src="/images/yedek-parca/pad-real-1.jpg" alt="" className="rounded-2xl bg-white/15 backdrop-blur-md object-cover" />
-                  <img src="/images/yedek-parca/sunger-10cm.png" alt="" className="rounded-2xl bg-white/15 backdrop-blur-md p-3 object-contain" />
-                  <img src="/images/yedek-parca/file-real-1.jpg" alt="" className="rounded-2xl bg-white/15 backdrop-blur-md object-cover" />
+                  <img loading="lazy" decoding="async" src="/images/yedek-parca/yay-25cm.png" alt="Trambolin yayı" className="rounded-2xl bg-white/15 backdrop-blur-md p-3 object-contain" />
+                  <img loading="lazy" decoding="async" src="/images/yedek-parca/pad-real-1.jpg" alt="Trambolin padi" className="rounded-2xl bg-white/15 backdrop-blur-md object-cover" />
+                  <img loading="lazy" decoding="async" src="/images/yedek-parca/sunger-10cm.png" alt="Yedek sünger" className="rounded-2xl bg-white/15 backdrop-blur-md p-3 object-contain" />
+                  <img loading="lazy" decoding="async" src="/images/yedek-parca/file-real-1.jpg" alt="Koruma filesi" className="rounded-2xl bg-white/15 backdrop-blur-md object-cover" />
                 </div>
               </div>
             </div>

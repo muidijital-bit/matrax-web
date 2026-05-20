@@ -7,7 +7,7 @@ const contactInfo = [
   {
     icon: <Phone size={20} />,
     title: 'Telefon',
-    lines: ['0850 123 45 67', '0212 000 00 00'],
+    lines: ['0850 123 45 67'],
     color: 'bg-neon-pink text-white',
   },
   {

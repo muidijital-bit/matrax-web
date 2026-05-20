@@ -112,9 +112,7 @@ export const useSpareCategories = () => {
       supabase.from('spare_parts').select('*').order('sort_order'),
     ]).then(([{ data: cats }, { data: parts }]) => {
       if (cats && cats.length > 0 && parts) {
-        const mapped = mapSpareCategories(cats as DbSpareCategory[], parts as DbSparePart[]);
-        console.log('[spare] sample item image:', mapped[0]?.items[0]);
-        setSpareCategories(mapped);
+        setSpareCategories(mapSpareCategories(cats as DbSpareCategory[], parts as DbSparePart[]));
       }
       setLoading(false);
     });
