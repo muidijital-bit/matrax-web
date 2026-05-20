@@ -135,9 +135,9 @@ const ProductsTab = ({ categories }: { categories: DbCategory[] }) => {
   const openAdd = () => { setEditId(null); setForm({...EMPTY_PRODUCT}); setPanelError(null); setPanelOpen(true); };
   const openEdit = (p:DbProduct) => {
     setEditId(p.id);
-    setForm({ name:p.name, slug:p.slug, code:p.code??'', category:p.category, category_key:p.category_key,
-      badge:p.badge??'', price:p.price, image:p.image??'', images:p.images??[], description:p.description??'',
-      long_desc:p.long_desc??'', features:p.features??[], specs:p.specs??[], is_active:p.is_active, sort_order:p.sort_order });
+    setForm({ name:p.name??'', slug:p.slug??'', code:p.code??'', category:p.category??'', category_key:p.category_key??'',
+      badge:p.badge??'', price:p.price??'Fiyat İste', image:p.image??'', images:p.images??[], description:p.description??'',
+      long_desc:p.long_desc??'', features:p.features??[], specs:p.specs??[], is_active:p.is_active??true, sort_order:p.sort_order??0 });
     setPanelError(null);
     setPanelOpen(true);
   };
@@ -345,9 +345,14 @@ const ProductsTab = ({ categories }: { categories: DbCategory[] }) => {
             </div>
             <div className="px-6 py-4 border-t border-slate-100 flex-shrink-0">
               {panelError && <p className="text-red-600 text-xs font-semibold mb-3 bg-red-50 px-3 py-2 rounded-xl">{panelError}</p>}
+              {(!form.name||!form.slug||!form.category_key) && (
+                <p className="text-amber-600 text-xs font-semibold mb-3 bg-amber-50 px-3 py-2 rounded-xl">
+                  Zorunlu alanlar eksik: {[!form.name&&'Ürün Adı',!form.slug&&'Slug',!form.category_key&&'Kategori'].filter(Boolean).join(', ')}
+                </p>
+              )}
               <div className="flex gap-3">
                 <button onClick={()=>setPanelOpen(false)} className="flex-1 py-2.5 rounded-xl border border-slate-200 font-bold text-sm text-slate-600 hover:bg-slate-50">İptal</button>
-                <button onClick={save} disabled={saving||!form.name||!form.slug||!form.category_key} className="flex-1 py-2.5 rounded-xl text-white font-bold text-sm disabled:opacity-50" style={{background:'#f83567'}}>
+                <button onClick={save} disabled={saving||!form.name||!form.slug||!form.category_key} className="flex-1 py-2.5 rounded-xl text-white font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed" style={{background:'#f83567'}}>
                   {saving?'Kaydediliyor...':editId?'Güncelle':'Kaydet'}
                 </button>
               </div>
