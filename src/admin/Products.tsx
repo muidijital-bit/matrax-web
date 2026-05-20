@@ -27,28 +27,37 @@ const ImageUpload = ({ value, onChange, folder = 'products' }: {
   value: string; onChange: (url: string) => void; folder?: string;
 }) => {
   const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState('');
   const ref = useRef<HTMLInputElement>(null);
   const upload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]; if (!file) return;
     setUploading(true);
+    setUploadError('');
     const path = `${folder}/${Date.now()}.${file.name.split('.').pop()}`;
     const { error } = await supabase.storage.from('images').upload(path, file, { upsert: true });
-    if (!error) onChange(supabase.storage.from('images').getPublicUrl(path).data.publicUrl);
+    if (error) {
+      setUploadError('Yükleme başarısız: ' + error.message);
+    } else {
+      onChange(supabase.storage.from('images').getPublicUrl(path).data.publicUrl);
+    }
     setUploading(false);
     if (ref.current) ref.current.value = '';
   };
   return (
-    <div className="flex items-center gap-3">
-      {value && (
-        <div className="relative group">
-          <img src={value} alt="" className="w-16 h-16 object-cover rounded-xl border border-slate-200" />
-          <button type="button" onClick={() => onChange('')} className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-500 text-white rounded-full hidden group-hover:flex items-center justify-center"><X size={10}/></button>
-        </div>
-      )}
-      <label className={`cursor-pointer inline-flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-semibold transition-colors ${uploading ? 'bg-slate-100 text-slate-400' : 'bg-slate-100 hover:bg-slate-200 text-slate-700'}`}>
-        <Upload size={14}/>{uploading ? 'Yükleniyor...' : 'Görsel Yükle'}
-        <input ref={ref} type="file" accept="image/*" onChange={upload} className="hidden" disabled={uploading}/>
-      </label>
+    <div className="flex flex-col gap-1.5">
+      <div className="flex items-center gap-3">
+        {value && (
+          <div className="relative group">
+            <img src={value} alt="" className="w-16 h-16 object-contain rounded-xl border border-slate-200 bg-white p-1" />
+            <button type="button" onClick={() => onChange('')} className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-500 text-white rounded-full hidden group-hover:flex items-center justify-center"><X size={10}/></button>
+          </div>
+        )}
+        <label className={`cursor-pointer inline-flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-semibold transition-colors ${uploading ? 'bg-slate-100 text-slate-400' : 'bg-slate-100 hover:bg-slate-200 text-slate-700'}`}>
+          <Upload size={14}/>{uploading ? 'Yükleniyor...' : 'Görsel Yükle'}
+          <input ref={ref} type="file" accept="image/*" onChange={upload} className="hidden" disabled={uploading}/>
+        </label>
+      </div>
+      {uploadError && <p className="text-xs text-red-500 font-semibold">{uploadError}</p>}
     </div>
   );
 };
