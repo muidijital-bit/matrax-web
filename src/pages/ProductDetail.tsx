@@ -47,8 +47,8 @@ const ProductDetail = () => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') setZoomed(false);
       if (!product) return;
-      if (e.key === 'ArrowRight') setZoomIdx(i => (i + 1) % product.images.length);
-      if (e.key === 'ArrowLeft') setZoomIdx(i => (i - 1 + product.images.length) % product.images.length);
+      if (e.key === 'ArrowRight') setZoomIdx(i => (i + 1) % displayImages.length);
+      if (e.key === 'ArrowLeft') setZoomIdx(i => (i - 1 + displayImages.length) % displayImages.length);
     };
     window.addEventListener('keydown', onKey);
     document.body.style.overflow = 'hidden';
@@ -82,6 +82,11 @@ const ProductDetail = () => {
 
   const subcat = SUBCATS.find(s => s.catKey === product.categoryKey && s.match(product.slug));
 
+  // images boşsa image'ı fallback olarak kullan
+  const displayImages = product.images?.length
+    ? product.images
+    : product.image ? [product.image] : [];
+
   const features = product.features ?? [
     'EN-1176 Uluslararası Sertifika',
     'A-1 Kalite UV Dayanımlı Branda',
@@ -109,8 +114,8 @@ const ProductDetail = () => {
     if (touchStartX.current === null || touchEndX.current === null) return;
     const diff = touchStartX.current - touchEndX.current;
     if (Math.abs(diff) < 40) return;
-    if (diff > 0) setActiveImg(i => (i + 1) % product.images.length);
-    else setActiveImg(i => (i - 1 + product.images.length) % product.images.length);
+    if (diff > 0) setActiveImg(i => (i + 1) % displayImages.length);
+    else setActiveImg(i => (i - 1 + displayImages.length) % displayImages.length);
     touchStartX.current = null;
     touchEndX.current = null;
   };
@@ -165,7 +170,7 @@ const ProductDetail = () => {
                 transition={{ duration: 0.25 }}
                 loading="lazy"
                 decoding="async"
-                src={product.images[activeImg]}
+                src={displayImages[activeImg]}
                 alt={product.name}
                 className="w-full h-full object-contain p-4 pointer-events-none"
               />
@@ -177,17 +182,17 @@ const ProductDetail = () => {
             </div>
 
             {/* Mobile arrows */}
-            {product.images.length > 1 && (
+            {displayImages.length > 1 && (
               <>
                 <button
-                  onClick={(e) => { e.stopPropagation(); setActiveImg(i => (i - 1 + product.images.length) % product.images.length); }}
+                  onClick={(e) => { e.stopPropagation(); setActiveImg(i => (i - 1 + displayImages.length) % displayImages.length); }}
                   className="lg:hidden absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-md"
                   aria-label="Önceki"
                 >
                   <ChevronLeft size={20} className="text-slate-700" />
                 </button>
                 <button
-                  onClick={(e) => { e.stopPropagation(); setActiveImg(i => (i + 1) % product.images.length); }}
+                  onClick={(e) => { e.stopPropagation(); setActiveImg(i => (i + 1) % displayImages.length); }}
                   className="lg:hidden absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-md"
                   aria-label="Sonraki"
                 >
@@ -195,16 +200,16 @@ const ProductDetail = () => {
                 </button>
                 {/* Sayaç */}
                 <div className="lg:hidden absolute bottom-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-black/55 backdrop-blur-sm text-white text-[11px] font-black rounded-full">
-                  {activeImg + 1} / {product.images.length}
+                  {activeImg + 1} / {displayImages.length}
                 </div>
               </>
             )}
           </div>
 
           {/* Thumbnail strip */}
-          {product.images.length > 1 && (
+          {displayImages.length > 1 && (
             <div className="flex gap-2 overflow-x-auto pb-1 snap-x snap-mandatory scrollbar-hide">
-              {product.images.map((img, i) => (
+              {displayImages.map((img, i) => (
                 <button
                   key={i}
                   onClick={() => setActiveImg(i)}
@@ -333,7 +338,7 @@ const ProductDetail = () => {
       <AnimatePresence>
         {zoomed && (
           <ZoomLightbox
-            images={product.images}
+            images={displayImages}
             index={zoomIdx}
             onClose={() => setZoomed(false)}
             setIndex={setZoomIdx}
