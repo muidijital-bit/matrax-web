@@ -189,9 +189,9 @@ const SpareParts = () => {
   };
 
   const visibleParts = parts.filter(p => {
-    const inCat = !selectedCat || p.category_key === selectedCat;
-    const inSearch = !search || p.title.toLowerCase().includes(search.toLowerCase()) || p.key.toLowerCase().includes(search.toLowerCase());
-    return inCat && inSearch;
+    const inCat = !search && (!selectedCat || p.category_key === selectedCat);
+    const inSearch = !!search && (p.title.toLowerCase().includes(search.toLowerCase()) || p.key.toLowerCase().includes(search.toLowerCase()));
+    return inCat || inSearch;
   });
 
   return (
@@ -258,25 +258,15 @@ const SpareParts = () => {
                       type="text"
                       value={search}
                       onChange={e => setSearch(e.target.value)}
-                      placeholder="Parça adı veya key..."
+                      placeholder="Tüm parçalarda ara..."
                       className="w-full pl-9 pr-3 py-2 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-700 placeholder-slate-400 focus:outline-none focus:border-brand-pink transition-colors"
                     />
-                  </div>
-                  <div className="relative">
-                    <select
-                      value={selectedCat}
-                      onChange={e => { setSelectedCat(e.target.value); setSearch(''); }}
-                      className="appearance-none pl-3 pr-8 py-2 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-700 focus:outline-none focus:border-brand-pink transition-colors"
-                    >
-                      {cats.map(c => <option key={c.key} value={c.key}>{c.title}</option>)}
-                    </select>
-                    <ChevronDown size={13} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"/>
                   </div>
                   <button onClick={openAddPart} className="flex items-center gap-2 px-3 py-2 text-white rounded-xl font-bold text-sm transition-colors" style={{background:'#f83567'}}>
                     <Plus size={14}/> Yeni Parça
                   </button>
                 </div>
-                <p className="text-xs font-medium text-slate-400 mb-2">{visibleParts.length} parça</p>
+                <p className="text-xs font-medium text-slate-400 mb-2">{visibleParts.length} parça{search && ' bulundu'}</p>
 
                 <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
                   {visibleParts.length === 0 ? (
