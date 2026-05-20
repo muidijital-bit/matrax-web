@@ -256,8 +256,8 @@ const ProductsTab = ({ categories }: { categories: DbCategory[] }) => {
                   <input className="input" value={form.name} onChange={e=>handleNameChange(e.target.value)} placeholder="Ticari Olimpik Trambolin"/>
                 </div>
                 <div>
-                  <label className="label">Slug (URL) *</label>
-                  <input className="input font-mono text-sm" value={form.slug} onChange={e=>sf('slug',e.target.value)}/>
+                  <label className="label">Slug (URL) * <span className="text-slate-400 font-normal normal-case">— addan otomatik</span></label>
+                  <input className="input font-mono text-sm" value={form.slug} onChange={e=>sf('slug',e.target.value)} placeholder="otomatik-dolar"/>
                 </div>
                 <div>
                   <label className="label">Ürün Kodu</label>
