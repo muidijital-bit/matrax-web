@@ -452,14 +452,16 @@ const Layout = () => {
                     </div>
                   </a>
                 </li>
-                <li className="flex items-start gap-3 text-slate-300">
-                  <span className="w-9 h-9 rounded-lg bg-neon-orange/20 flex items-center justify-center flex-shrink-0">
-                    <MapPin size={15} className="text-neon-orange" />
-                  </span>
-                  <div>
-                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-wider">Hizmet</p>
-                    <span className="font-bold text-sm leading-relaxed">Türkiye geneli üretim & anahtar teslim kurulum</span>
-                  </div>
+                <li>
+                  <a href="https://maps.google.com/?q=İvedik+Osb+1372+Sok.+No.+33/2+Yenimahalle+Ankara" target="_blank" rel="noopener noreferrer" className="flex items-start gap-3 text-slate-300 hover:text-white transition-colors group">
+                    <span className="w-9 h-9 rounded-lg bg-neon-orange/20 group-hover:bg-neon-orange flex items-center justify-center flex-shrink-0 transition-colors">
+                      <MapPin size={15} className="text-neon-orange group-hover:text-white" />
+                    </span>
+                    <div>
+                      <p className="text-[10px] font-black text-slate-500 uppercase tracking-wider">Adres</p>
+                      <span className="font-bold text-sm leading-relaxed">İvedik Osb 1372 Sok. No. 33/2<br />Yenimahalle / Ankara</span>
+                    </div>
+                  </a>
                 </li>
               </ul>
             </div>

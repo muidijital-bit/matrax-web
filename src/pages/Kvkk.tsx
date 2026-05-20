@@ -28,7 +28,7 @@ const sections = [
   },
   {
     title: '7. Başvuru Yöntemi',
-    body: `KVKK kapsamındaki başvurularınızı, kimliğinizi tespit edici belgelerle birlikte info@matraxoyungruplari.com adresine e-posta yoluyla veya tarafımıza fiziki olarak iletebilirsiniz. Başvurularınız, talebin niteliğine göre en geç 30 gün içinde sonuçlandırılır.`,
+    body: `KVKK kapsamındaki başvurularınızı, kimliğinizi tespit edici belgelerle birlikte info@matraxoyungruplari.com adresine e-posta yoluyla veya İvedik Osb 1372 Sok. No. 33/2 Yenimahalle / Ankara adresine fiziki olarak iletebilirsiniz. Başvurularınız, talebin niteliğine göre en geç 30 gün içinde sonuçlandırılır.`,
   },
 ];
 
