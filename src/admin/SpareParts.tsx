@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { supabase } from '../lib/supabase';
 import type { DbSparePart, DbSpareCategory } from '../lib/types';
-import { Plus, Pencil, Trash2, X, Upload, ChevronDown, ImagePlus, FolderOpen } from 'lucide-react';
+import { Plus, Pencil, Trash2, X, Upload, ChevronDown, ImagePlus, FolderOpen, Search } from 'lucide-react';
 import { spareCategories as localSpareCategories } from '../data/spareParts';
 
 const getLocalImage = (key: string): string => {
@@ -97,6 +97,7 @@ const SpareParts = () => {
   const [parts, setParts] = useState<DbSparePart[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCat, setSelectedCat] = useState<string>('');
+  const [search, setSearch] = useState('');
 
   // Kategori paneli
   const [catPanel, setCatPanel] = useState(false);
@@ -187,7 +188,11 @@ const SpareParts = () => {
     setDeletePartId(null); fetchAll();
   };
 
-  const visibleParts = parts.filter(p => p.category_key === selectedCat);
+  const visibleParts = parts.filter(p => {
+    const inCat = !selectedCat || p.category_key === selectedCat;
+    const inSearch = !search || p.title.toLowerCase().includes(search.toLowerCase()) || p.key.toLowerCase().includes(search.toLowerCase());
+    return inCat && inSearch;
+  });
 
   return (
     <div>
@@ -246,14 +251,32 @@ const SpareParts = () => {
           <div>
             {selectedCat ? (
               <>
-                <div className="flex items-center justify-between mb-3">
-                  <p className="font-bold text-slate-700 text-sm">
-                    {cats.find(c=>c.key===selectedCat)?.title} — <span className="text-slate-400 font-medium">{visibleParts.length} parça</span>
-                  </p>
+                <div className="flex flex-wrap items-center gap-2 mb-3">
+                  <div className="relative flex-1 min-w-48">
+                    <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"/>
+                    <input
+                      type="text"
+                      value={search}
+                      onChange={e => setSearch(e.target.value)}
+                      placeholder="Parça adı veya key..."
+                      className="w-full pl-9 pr-3 py-2 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-700 placeholder-slate-400 focus:outline-none focus:border-brand-pink transition-colors"
+                    />
+                  </div>
+                  <div className="relative">
+                    <select
+                      value={selectedCat}
+                      onChange={e => { setSelectedCat(e.target.value); setSearch(''); }}
+                      className="appearance-none pl-3 pr-8 py-2 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-700 focus:outline-none focus:border-brand-pink transition-colors"
+                    >
+                      {cats.map(c => <option key={c.key} value={c.key}>{c.title}</option>)}
+                    </select>
+                    <ChevronDown size={13} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"/>
+                  </div>
                   <button onClick={openAddPart} className="flex items-center gap-2 px-3 py-2 text-white rounded-xl font-bold text-sm transition-colors" style={{background:'#f83567'}}>
                     <Plus size={14}/> Yeni Parça
                   </button>
                 </div>
+                <p className="text-xs font-medium text-slate-400 mb-2">{visibleParts.length} parça</p>
 
                 <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
                   {visibleParts.length === 0 ? (
