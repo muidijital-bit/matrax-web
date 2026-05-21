@@ -126,11 +126,13 @@ export const useProduct = (slug: string) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    setLoading(true);
+    setProduct(null);
     supabase
       .from('products')
       .select('*')
       .eq('slug', slug)
-      .single()
+      .maybeSingle()
       .then(({ data }) => {
         if (data) {
           setProduct(mapProduct(data as DbProduct));

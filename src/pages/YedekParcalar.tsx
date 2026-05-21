@@ -74,10 +74,19 @@ const YedekParcalar = () => {
 
     setOpenKeys(prev => new Set([...prev, catKey]));
 
-    const t = setTimeout(() => {
-      const targetId = partKey ? `spare-${catKey}--${partKey}` : catKey;
-      document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }, 300);
+    // Retry: element DOM'a render olana kadar dene (yeni eklenen parçalar için)
+    const targetId = partKey ? `spare-${catKey}--${partKey}` : catKey;
+    let attempts = 0;
+    const tryScroll = () => {
+      const el = document.getElementById(targetId);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else if (attempts < 8) {
+        attempts++;
+        setTimeout(tryScroll, 200);
+      }
+    };
+    const t = setTimeout(tryScroll, 400);
     return () => clearTimeout(t);
   }, [categories, location.hash]);
 
