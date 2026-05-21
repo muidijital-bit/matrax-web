@@ -11,6 +11,39 @@ import { useSpareCategories } from '../lib/useSupabaseData';
 import { usePageMeta } from '../lib/usePageMeta';
 
 const tr = (s: string) => (s ?? '').toLocaleLowerCase('tr');
+const splitWords = (s: string) => tr(s).split(/[\s,.()\-\/]+/).filter(Boolean);
+
+const scoreWord = (text: string, q: string): number => {
+  const t = tr(text);
+  if (!t || !q) return 0;
+  if (t === q) return 100;
+  const ws = splitWords(text);
+  if (ws.some(w => w === q)) return 90;
+  if (ws.some(w => w.startsWith(q))) return 65;
+  if (t.startsWith(q)) return 55;
+  if (ws.some(w => w.includes(q) && q.length >= 3)) return 25;
+  return 0;
+};
+
+const scoreText = (text: string, q: string): number => {
+  const qs = splitWords(q);
+  if (qs.length === 0) return 0;
+  if (qs.length === 1) return scoreWord(text, qs[0]);
+  const scores = qs.map(w => scoreWord(text, w));
+  if (scores.some(s => s === 0)) return 0;
+  return Math.round(scores.reduce((a, b) => a + b, 0) / qs.length);
+};
+
+const spareRelevance = (title: string, catTitle: string, desc: string, q: string): number => {
+  const qLen = tr(q).length;
+  const titleScore = scoreText(title, q) * 6;
+  const catScore   = qLen >= 3 ? scoreText(catTitle, q) * 2 : 0;
+  const descScore  = qLen >= 4 ? scoreText(desc, q) * 1 : 0;
+  if (titleScore === 0 && splitWords(q).every(w => scoreWord(title, w) === 0)) {
+    return Math.round((catScore + descScore) * 0.3);
+  }
+  return titleScore + catScore + descScore;
+};
 
 
 const guarantees = [
@@ -93,22 +126,25 @@ const YedekParcalar = () => {
     return () => clearTimeout(t);
   }, [catsLoading, categories, location.hash]);
 
-  // Dropdown hits
+  // Dropdown hits — hassas arama
   const hits = useMemo(() => {
     const q = tr(query.trim());
     if (q.length < 2) return [];
-    const results: { key: string; title: string; subtitle: string; image?: string; to: string }[] = [];
+    const MIN_SCORE = q.length <= 2 ? 60 : 20;
+    const results: { key: string; title: string; subtitle: string; image?: string; to: string; score: number }[] = [];
     for (const cat of categories) {
-      if (tr(cat.title).includes(q)) {
-        results.push({ key: `c-${cat.key}`, title: cat.title, subtitle: 'Yedek Parça Kategorisi', image: cat.cover || undefined, to: `/yedek-parcalar#${encodeURIComponent(cat.key)}` });
+      const catScore = scoreText(cat.title, q) * 4;
+      if (catScore >= MIN_SCORE) {
+        results.push({ key: `c-${cat.key}`, title: cat.title, subtitle: 'Yedek Parça Kategorisi', image: cat.cover || undefined, to: `/yedek-parcalar#${encodeURIComponent(cat.key)}`, score: catScore });
       }
       for (const item of cat.items) {
-        if (tr(item.title).includes(q) || tr(item.desc).includes(q)) {
-          results.push({ key: `i-${cat.key}-${item.key}`, title: item.title, subtitle: `Yedek Parça · ${cat.title}`, image: item.image ?? cat.cover ?? undefined, to: `/yedek-parcalar#${encodeURIComponent(cat.key)}--${encodeURIComponent(item.key)}` });
+        const sc = spareRelevance(item.title, cat.title, item.desc, q);
+        if (sc >= MIN_SCORE) {
+          results.push({ key: `i-${cat.key}-${item.key}`, title: item.title, subtitle: `Yedek Parça · ${cat.title}`, image: item.image ?? cat.cover ?? undefined, to: `/yedek-parcalar#${encodeURIComponent(cat.key)}--${encodeURIComponent(item.key)}`, score: sc });
         }
       }
     }
-    return results.slice(0, 4);
+    return results.sort((a, b) => b.score - a.score).slice(0, 4);
   }, [query, categories]);
 
   const showDropdown = query.trim().length >= 2;
