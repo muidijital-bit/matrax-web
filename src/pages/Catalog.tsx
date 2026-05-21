@@ -180,11 +180,18 @@ const Catalog = () => {
 
     const extraItems = [...singles, ...unmatched].sort(smartSort);
     const result: { key: string; label: string; items: Product[] }[] = [];
-    // Eşleşmeyenler en üste
-    if (extraItems.length > 0) {
-      result.push({ key: '__other__', label: multi.length === 0 ? '' : 'Diğer Modeller', items: extraItems });
+    // Soft-play'de eşleşmeyenler en üste, diğer kategorilerde en alta
+    if (catKey === 'soft-play') {
+      if (extraItems.length > 0) {
+        result.push({ key: '__other__', label: multi.length === 0 ? '' : 'Diğer Modeller', items: extraItems });
+      }
+      result.push(...multi);
+    } else {
+      result.push(...multi);
+      if (extraItems.length > 0) {
+        result.push({ key: multi.length === 0 ? '__flat__' : '__other__', label: multi.length === 0 ? '' : 'Diğer Modeller', items: extraItems });
+      }
     }
-    result.push(...multi);
     return result;
   };
 
