@@ -178,15 +178,13 @@ const Catalog = () => {
     // Alt kategoriye giremeyen ürünler (slug eşleşmeyenler)
     const unmatched = items.filter(p => subKeyFor(p) === null);
 
-    const result: { key: string; label: string; items: Product[] }[] = [...multi];
     const extraItems = [...singles, ...unmatched].sort(smartSort);
+    const result: { key: string; label: string; items: Product[] }[] = [];
+    // Eşleşmeyenler en üste
     if (extraItems.length > 0) {
-      if (multi.length === 0) {
-        result.push({ key: '__flat__', label: '', items: extraItems });
-      } else {
-        result.push({ key: '__other__', label: 'Diğer Modeller', items: extraItems });
-      }
+      result.push({ key: '__other__', label: multi.length === 0 ? '' : 'Diğer Modeller', items: extraItems });
     }
+    result.push(...multi);
     return result;
   };
 
