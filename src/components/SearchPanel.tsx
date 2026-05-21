@@ -17,27 +17,50 @@ type Hit = {
   score: number;
 };
 
-// Türkçe küçük harf
+// Türkçe küçük harf + normalize
 const tr = (s: string) => (s ?? '').toLocaleLowerCase('tr');
+const words = (s: string) => tr(s).split(/[\s,.()\-\/]+/).filter(Boolean);
 
-// Alaka puanı: başlıkta kelime başı eşleşmesi en yüksek puan alır
-const scoreText = (text: string, q: string): number => {
+// Tek kelime skoru
+const scoreWord = (text: string, q: string): number => {
   const t = tr(text);
-  if (!t) return 0;
+  if (!t || !q) return 0;
   if (t === q) return 100;
-  const words = t.split(/[\s,.()\-\/]+/).filter(Boolean);
-  if (words.some(w => w === q)) return 90;
-  if (words.some(w => w.startsWith(q))) return 70;
-  if (t.startsWith(q)) return 60;
-  if (t.includes(q)) return 30;
+  const ws = words(text);
+  if (ws.some(w => w === q)) return 90;
+  if (ws.some(w => w.startsWith(q))) return 65;
+  if (t.startsWith(q)) return 55;
+  // Tam kelime sınırı içinde geçiyor mu?
+  if (ws.some(w => w.includes(q) && q.length >= 3)) return 25;
   return 0;
 };
 
-const relevance = (title: string, code: string, category: string, desc: string, q: string) =>
-  scoreText(title, q) * 5 +
-  scoreText(code, q) * 4 +
-  scoreText(category, q) * 2 +
-  scoreText(desc, q) * 1;
+// Multi-kelime: tüm kelimelerin eşleşmesi gerekir
+const scoreText = (text: string, q: string): number => {
+  const qs = words(q);
+  if (qs.length === 0) return 0;
+  if (qs.length === 1) return scoreWord(text, qs[0]);
+  // Tüm kelimeler eşleşmeli
+  const scores = qs.map(w => scoreWord(text, w));
+  if (scores.some(s => s === 0)) return 0;
+  return Math.round(scores.reduce((a, b) => a + b, 0) / qs.length);
+};
+
+const relevance = (title: string, code: string, category: string, desc: string, q: string): number => {
+  const qs = words(q);
+  const titleScore = scoreText(title, q) * 6;
+  const codeScore = scoreText(code, q) * 4;
+  // Kısa sorgularda (< 3 char) açıklama ve kategoriyi sayma
+  const qLen = tr(q).length;
+  const catScore  = qLen >= 3 ? scoreText(category, q) * 2 : 0;
+  const descScore = qLen >= 4 ? scoreText(desc, q) * 1 : 0;
+  // En az başlık veya kod eşleşmesi yoksa sıfır döndür
+  if (titleScore === 0 && codeScore === 0 && qs.every(w => scoreWord(title, w) === 0 && scoreWord(code, w) === 0)) {
+    // Sadece kategori/açıklamada geçiyorsa çok düşük tutarız
+    return Math.round((catScore + descScore) * 0.3);
+  }
+  return titleScore + codeScore + catScore + descScore;
+};
 
 const SearchPanel = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
   const [query, setQuery] = useState('');
@@ -181,10 +204,12 @@ const SearchPanel = ({ open, onClose }: { open: boolean; onClose: () => void }) 
       }
     }
 
-    // Tüm sonuçları puana göre sırala, en alakalı öne
+    // Minimum eşik: düşük puanlı alakasız sonuçları ele
+    const MIN_SCORE = tr(query.trim()).length <= 2 ? 60 : 20;
     return [...productHits, ...spareHits]
+      .filter(h => h.score >= MIN_SCORE)
       .sort((a, b) => b.score - a.score)
-      .slice(0, 14);
+      .slice(0, 12);
   }, [query, dbProducts, dbSpareCats, dbSpareParts]);
 
   return (
