@@ -171,7 +171,7 @@ const SearchPanel = ({ open, onClose }: { open: boolean; onClose: () => void }) 
           type: 'spare', key: `c-${cat.key}`,
           title: cat.title, subtitle: 'Yedek Parça Kategorisi',
           image: cat.cover ?? undefined,
-          to: `/yedek-parcalar#${cat.key}`, score: catScore,
+          to: `/yedek-parcalar#${encodeURIComponent(cat.key)}`, score: catScore,
         });
         for (const part of dbSpareParts.filter(p => p.category_key === cat.key)) {
           const sc = relevance(part.title, part.key, cat.title, part.description ?? '', q);
@@ -179,7 +179,7 @@ const SearchPanel = ({ open, onClose }: { open: boolean; onClose: () => void }) 
             type: 'spare', key: `i-${cat.key}-${part.key}`,
             title: part.title, subtitle: `Yedek Parça · ${cat.title}`,
             image: part.image ?? cat.cover ?? undefined,
-            to: `/yedek-parcalar#${cat.key}--${part.key}`, score: sc,
+            to: `/yedek-parcalar#${encodeURIComponent(cat.key)}--${encodeURIComponent(part.key)}`, score: sc,
           });
         }
       }

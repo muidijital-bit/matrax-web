@@ -71,7 +71,9 @@ const YedekParcalar = () => {
     const hash = location.hash.slice(1);
     if (!hash) return;
 
-    const [catKey, partKey] = hash.split('--');
+    const parts = hash.split('--');
+    const catKey = decodeURIComponent(parts[0]);
+    const partKey = parts[1] ? decodeURIComponent(parts[1]) : '';
     if (!categories.find(c => c.key === catKey)) return;
 
     setOpenKeys(prev => new Set([...prev, catKey]));
@@ -98,11 +100,11 @@ const YedekParcalar = () => {
     const results: { key: string; title: string; subtitle: string; image?: string; to: string }[] = [];
     for (const cat of categories) {
       if (tr(cat.title).includes(q)) {
-        results.push({ key: `c-${cat.key}`, title: cat.title, subtitle: 'Yedek Parça Kategorisi', image: cat.cover || undefined, to: `/yedek-parcalar#${cat.key}` });
+        results.push({ key: `c-${cat.key}`, title: cat.title, subtitle: 'Yedek Parça Kategorisi', image: cat.cover || undefined, to: `/yedek-parcalar#${encodeURIComponent(cat.key)}` });
       }
       for (const item of cat.items) {
         if (tr(item.title).includes(q) || tr(item.desc).includes(q)) {
-          results.push({ key: `i-${cat.key}-${item.key}`, title: item.title, subtitle: `Yedek Parça · ${cat.title}`, image: item.image ?? cat.cover ?? undefined, to: `/yedek-parcalar#${cat.key}--${item.key}` });
+          results.push({ key: `i-${cat.key}-${item.key}`, title: item.title, subtitle: `Yedek Parça · ${cat.title}`, image: item.image ?? cat.cover ?? undefined, to: `/yedek-parcalar#${encodeURIComponent(cat.key)}--${encodeURIComponent(item.key)}` });
         }
       }
     }
