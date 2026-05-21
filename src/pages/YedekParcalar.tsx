@@ -32,7 +32,7 @@ const YedekParcalar = () => {
     'Trambolin yayları, koruma padleri, koruma filesi, salto ekipmanları ve tüm yedek parçalar. Orijinal ölçülerde yerli üretim, Türkiye geneli kargo.',
     'trambolin yedek parça, trambolin yayı, koruma padi, salto kemeri, yedek parça sipariş'
   );
-  const { spareCategories: categories } = useSpareCategories();
+  const { spareCategories: categories, loading: catsLoading } = useSpareCategories();
   const location = useLocation();
   const navigate = useNavigate();
   const [openKeys, setOpenKeys] = useState<Set<string>>(new Set());
@@ -63,8 +63,10 @@ const YedekParcalar = () => {
       return next;
     });
 
-  // Hash ile gelen kategoriyi otomatik aç + kaydır (search panel'den tıklama)
+  // Hash ile gelen kategoriyi otomatik aç + kaydır
+  // Supabase yükü bitene kadar bekler — yeni eklenen parçalar için kritik
   useEffect(() => {
+    if (catsLoading) return;           // Supabase henüz yüklenmedi, bekle
     if (categories.length === 0) return;
     const hash = location.hash.slice(1);
     if (!hash) return;
@@ -74,21 +76,20 @@ const YedekParcalar = () => {
 
     setOpenKeys(prev => new Set([...prev, catKey]));
 
-    // Retry: element DOM'a render olana kadar dene (yeni eklenen parçalar için)
     const targetId = partKey ? `spare-${catKey}--${partKey}` : catKey;
     let attempts = 0;
     const tryScroll = () => {
       const el = document.getElementById(targetId);
       if (el) {
         el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      } else if (attempts < 8) {
+      } else if (attempts < 10) {
         attempts++;
-        setTimeout(tryScroll, 200);
+        setTimeout(tryScroll, 150);
       }
     };
-    const t = setTimeout(tryScroll, 400);
+    const t = setTimeout(tryScroll, 200);
     return () => clearTimeout(t);
-  }, [categories, location.hash]);
+  }, [catsLoading, categories, location.hash]);
 
   // Dropdown hits
   const hits = useMemo(() => {
