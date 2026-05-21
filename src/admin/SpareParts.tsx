@@ -4,6 +4,12 @@ import type { DbSparePart, DbSpareCategory } from '../lib/types';
 import { Plus, Pencil, Trash2, X, Upload, ChevronDown, ImagePlus, FolderOpen, Search } from 'lucide-react';
 import { spareCategories as localSpareCategories } from '../data/spareParts';
 
+const slugify = (s: string) =>
+  s.toLowerCase().trim()
+    .replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ş/g,'s')
+    .replace(/ı/g,'i').replace(/ö/g,'o').replace(/ç/g,'c')
+    .replace(/[^a-z0-9\s-]/g,'').replace(/\s+/g,'-').replace(/-+/g,'-');
+
 const getLocalImage = (key: string): string => {
   for (const cat of localSpareCategories) {
     const item = cat.items.find(i => i.key === key);
@@ -374,8 +380,11 @@ const SpareParts = () => {
                   <ChevronDown size={13} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"/>
                 </div>
               </div>
-              <div><label className="label">Parça Adı *</label><input className="input" value={partForm.title} onChange={e => spf('title',e.target.value)} placeholder="8,5 cm Kare Kesit Yay"/></div>
-              <div><label className="label">Key *</label><input className="input font-mono text-sm" value={partForm.key} onChange={e => spf('key',e.target.value)} placeholder="yay-85-kare"/></div>
+              <div><label className="label">Parça Adı *</label><input className="input" value={partForm.title} onChange={e => {
+                const title = e.target.value;
+                setPartForm(f => ({ ...f, title, key: editPartId ? f.key : slugify(title) }));
+              }} placeholder="8,5 cm Kare Kesit Yay"/></div>
+              <div><label className="label">Key * <span className="text-slate-400 font-normal normal-case">— addan otomatik</span></label><input className="input font-mono text-sm" value={partForm.key} onChange={e => spf('key',e.target.value)} placeholder="otomatik-dolar"/></div>
               <div><label className="label">Açıklama</label><textarea className="input resize-none" rows={3} value={partForm.description} onChange={e => spf('description',e.target.value)}/></div>
               <div>
                 <label className="label">Ana Görsel</label>
