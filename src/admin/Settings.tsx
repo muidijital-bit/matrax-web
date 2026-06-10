@@ -285,7 +285,7 @@ const Settings = () => {
                 </div>
                 <div>
                   <label className="label">WhatsApp Numarası</label>
-                  <input className="input" value={get('business_whatsapp')} onChange={e => set('business_whatsapp', e.target.value)} placeholder="908501234567" />
+                  <input className="input" value={get('business_whatsapp')} onChange={e => set('business_whatsapp', e.target.value)} placeholder="905521065579" />
                   <p className="text-xs text-slate-400 mt-1">Başında + olmadan, ülke koduyla.</p>
                 </div>
                 <div>

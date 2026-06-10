@@ -53,10 +53,10 @@ const guarantees = [
   { icon: Hammer,       title: 'Birebir Uyum', desc: 'Ürün kodunuzla orijinal ölçülere sadık üretim.', color: 'text-brand-pink' },
 ];
 
-const PHONE = '+908501234567';
+const PHONE = '+905521065579';
 const buildWa = (productTitle: string) => {
   const text = encodeURIComponent(`Merhaba, "${productTitle}" yedek parçası hakkında bilgi almak istiyorum.`);
-  return `https://wa.me/908501234567?text=${text}`;
+  return `https://wa.me/905521065579?text=${text}`;
 };
 
 const YedekParcalar = () => {
@@ -424,7 +424,7 @@ const YedekParcalar = () => {
                   <Phone size={18} /> Hemen Ara
                 </a>
                 <a
-                  href="https://wa.me/908501234567"
+                  href="https://wa.me/905521065579"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-white font-black px-6 py-4 rounded-2xl transition-all shadow-lg hover:-translate-y-0.5"

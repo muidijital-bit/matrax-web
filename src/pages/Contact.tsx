@@ -7,7 +7,7 @@ const contactInfo = [
   {
     icon: <Phone size={20} />,
     title: 'Telefon',
-    lines: ['0850 123 45 67'],
+    lines: ['0552 106 55 79'],
     color: 'bg-neon-pink text-white',
   },
   {
@@ -209,10 +209,10 @@ const Contact = () => {
                 <h3 className="text-xl font-bold mb-1">Hemen Arayın</h3>
                 <p className="text-white/80 font-bold text-sm mb-4">Uzmanlarımız size en uygun çözümü sunar.</p>
                 <a
-                  href="tel:+908501234567"
+                  href="tel:+905521065579"
                   className="inline-block bg-white text-neon-pink font-black px-6 py-3 rounded-full hover:scale-105 transition-transform shadow-xl"
                 >
-                  0850 123 45 67
+                  0552 106 55 79
                 </a>
               </div>
             </div>

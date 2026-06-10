@@ -507,7 +507,7 @@ const Home = () => {
                   Yedek Parçaları İncele <ArrowRight size={16} />
                 </span>
                 <a
-                  href="https://wa.me/908501234567"
+                  href="https://wa.me/905521065579"
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={(e) => e.stopPropagation()}
@@ -630,7 +630,7 @@ const Home = () => {
               icon: <Phone size={22} />,
               title: 'BİZİ ARAYIN',
               desc: 'Mesai saatlerimiz içerisinde bize telefon numaramızdan ulaşabilir, uzman ekibimizden bilgi alabilirsiniz.',
-              href: 'tel:+908501234567',
+              href: 'tel:+905521065579',
               color: 'bg-neon-pink',
             },
             {

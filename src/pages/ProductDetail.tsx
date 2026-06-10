@@ -126,7 +126,7 @@ const ProductDetail = () => {
   };
 
   const waMessage = encodeURIComponent(`Merhaba, "${product.name}" ürünü hakkında bilgi almak istiyorum.`);
-  const waLink = `https://wa.me/908501234567?text=${waMessage}`;
+  const waLink = `https://wa.me/905521065579?text=${waMessage}`;
 
   return (
     <div className="max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-10 pb-28 lg:pb-10 overflow-x-hidden">
@@ -276,7 +276,7 @@ const ProductDetail = () => {
           {/* Masaüstü CTA */}
           <div className="hidden lg:flex flex-row gap-3 mt-auto">
             <a
-              href="tel:+908501234567"
+              href="tel:+905521065579"
               className="flex-1 flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-700 text-white font-black py-4 rounded-2xl transition-all shadow-lg hover:-translate-y-0.5"
             >
               <Phone size={18} /> Fiyat Al
@@ -350,7 +350,7 @@ const ProductDetail = () => {
       {/* Mobil sabit CTA bar */}
       <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-100 shadow-2xl px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] flex gap-3">
         <a
-          href="tel:+908501234567"
+          href="tel:+905521065579"
           className="flex-1 flex items-center justify-center gap-2 bg-slate-900 text-white font-black py-3.5 rounded-2xl text-sm"
         >
           <Phone size={16} /> Fiyat Al
