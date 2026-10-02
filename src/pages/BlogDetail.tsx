@@ -9,13 +9,13 @@ const Block = ({ block }: { block: PostBlock }) => {
     case 'h2':
       return <h2 className="text-2xl md:text-3xl font-bold text-slate-900 leading-tight mt-12 mb-4 first:mt-0">{block.text}</h2>;
     case 'p':
-      return <p className="text-slate-600 font-medium leading-relaxed mb-5">{block.text}</p>;
+      return <p className="text-slate-600 font-medium leading-relaxed md:text-lg md:leading-relaxed mb-5">{block.text}</p>;
     case 'ul':
       return (
         <ul className="flex flex-col gap-3 mb-6">
           {block.items.map(item => (
-            <li key={item} className="flex items-start gap-3 text-slate-600 font-medium leading-relaxed">
-              <span className="w-1.5 h-1.5 rounded-full bg-neon-orange flex-shrink-0 mt-2.5" />
+            <li key={item} className="flex items-start gap-3 text-slate-600 font-medium leading-relaxed md:text-lg md:leading-relaxed">
+              <span className="w-1.5 h-1.5 rounded-full bg-neon-orange flex-shrink-0 mt-2.5 md:mt-3" />
               {item}
             </li>
           ))}
@@ -29,13 +29,13 @@ const Block = ({ block }: { block: PostBlock }) => {
           </span>
           <div>
             <p className="font-black text-slate-900 mb-1">{block.title}</p>
-            <p className="text-slate-600 font-medium leading-relaxed text-sm">{block.text}</p>
+            <p className="text-slate-600 font-medium leading-relaxed text-sm md:text-base">{block.text}</p>
           </div>
         </div>
       );
     case 'img':
       return (
-        <figure className="my-8">
+        <figure className="my-8 max-w-3xl mx-auto">
           <div className={`rounded-3xl overflow-hidden border-2 border-slate-100 aspect-[16/10] ${block.contain ? 'bg-white' : 'bg-slate-100'}`}>
             <img loading="lazy" decoding="async"
               src={block.src}
@@ -109,12 +109,12 @@ const BlogDetail = () => {
       </section>
 
       {/* İçerik */}
-      <article className="max-w-4xl mx-auto px-4 md:px-6 pb-6">
-        <div className="rounded-[2.5rem] overflow-hidden border-2 border-slate-100 aspect-[16/9] bg-slate-100 mb-8">
+      <article className="max-w-7xl mx-auto px-4 md:px-6 pb-6">
+        <div className="rounded-[2.5rem] overflow-hidden border-2 border-slate-100 aspect-[16/9] md:aspect-[2/1] bg-slate-100 mb-8">
           <img decoding="async" src={post.image} alt={post.title} className="w-full h-full object-cover" />
         </div>
 
-        <div className="bg-white rounded-[2.5rem] border-2 border-slate-100 shadow-sm p-6 md:p-12">
+        <div className="bg-white rounded-[2.5rem] border-2 border-slate-100 shadow-sm p-6 md:p-12 lg:p-16">
           {post.content.map((block, i) => <Block key={i} block={block} />)}
 
           {/* Kaynaklar */}
@@ -141,7 +141,7 @@ const BlogDetail = () => {
         <div className="mt-8 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-[2.5rem] p-8 md:p-10 text-white relative overflow-hidden shadow-xl">
           <div className="absolute -top-16 -right-16 w-56 h-56 bg-neon-orange/20 rounded-full blur-3xl pointer-events-none" />
           <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-            <div className="max-w-md">
+            <div className="max-w-xl">
               <p className="text-xs font-black text-neon-orange uppercase tracking-widest mb-2">Projenizi Konuşalım</p>
               <h3 className="text-2xl font-bold leading-tight">Alanınızın ölçüsüne göre yerleşim önerisi alın</h3>
             </div>
@@ -158,7 +158,7 @@ const BlogDetail = () => {
       </article>
 
       {/* Diğer yazılar */}
-      <section className="py-10 px-4 md:px-6 max-w-4xl mx-auto">
+      <section className="py-10 px-4 md:px-6 max-w-7xl mx-auto">
         <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-5">Diğer Yazılar</p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {others.map(o => (
