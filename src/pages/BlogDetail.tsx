@@ -1,22 +1,34 @@
 import { motion } from 'framer-motion';
 import { ArrowLeft, ArrowRight, Clock, Calendar, Lightbulb, Phone, ExternalLink } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
-import { posts, formatPostDate, postReadTime, type PostBlock } from '../data/posts';
+import { posts, formatPostDate } from '../data/posts';
+import { postBodies, type PostBlock } from '../data/postBodies';
 import { usePageMeta } from '../lib/usePageMeta';
+
+// [metin](/yol) biçimindeki bağlantıları çözer; site içi yollar Link, diğerleri yeni sekmede açılır
+const renderInline = (text: string) =>
+  text.split(/(\[[^\]]+\]\([^)]+\))/g).map((part, i) => {
+    const m = part.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
+    if (!m) return part;
+    const cls = 'text-neon-pink font-bold underline decoration-neon-pink/30 underline-offset-4 hover:decoration-neon-pink transition-colors';
+    return m[2].startsWith('/')
+      ? <Link key={i} to={m[2]} className={cls}>{m[1]}</Link>
+      : <a key={i} href={m[2]} target="_blank" rel="noopener noreferrer" className={cls}>{m[1]}</a>;
+  });
 
 const Block = ({ block }: { block: PostBlock }) => {
   switch (block.type) {
     case 'h2':
       return <h2 className="text-2xl md:text-3xl font-bold text-slate-900 leading-tight mt-12 mb-4 first:mt-0">{block.text}</h2>;
     case 'p':
-      return <p className="text-slate-600 font-medium leading-relaxed md:text-lg md:leading-relaxed mb-5">{block.text}</p>;
+      return <p className="text-slate-600 font-medium leading-relaxed md:text-lg md:leading-relaxed mb-5">{renderInline(block.text)}</p>;
     case 'ul':
       return (
         <ul className="flex flex-col gap-3 mb-6">
           {block.items.map(item => (
             <li key={item} className="flex items-start gap-3 text-slate-600 font-medium leading-relaxed md:text-lg md:leading-relaxed">
               <span className="w-1.5 h-1.5 rounded-full bg-neon-orange flex-shrink-0 mt-2.5 md:mt-3" />
-              {item}
+              <span>{renderInline(item)}</span>
             </li>
           ))}
         </ul>
@@ -29,7 +41,7 @@ const Block = ({ block }: { block: PostBlock }) => {
           </span>
           <div>
             <p className="font-black text-slate-900 mb-1">{block.title}</p>
-            <p className="text-slate-600 font-medium leading-relaxed text-sm md:text-base">{block.text}</p>
+            <p className="text-slate-600 font-medium leading-relaxed text-sm md:text-base">{renderInline(block.text)}</p>
           </div>
         </div>
       );
@@ -54,6 +66,7 @@ const Block = ({ block }: { block: PostBlock }) => {
 const BlogDetail = () => {
   const { slug } = useParams();
   const post = posts.find(p => p.slug === slug);
+  const body = post && postBodies[post.slug];
 
   usePageMeta(
     post ? `${post.title} | Matrax Blog` : 'Blog | Matrax Oyun Grupları',
@@ -61,7 +74,7 @@ const BlogDetail = () => {
     post?.keywords
   );
 
-  if (!post) {
+  if (!post || !body) {
     return (
       <div className="max-w-7xl mx-auto px-6 py-20 text-center">
         <p className="text-slate-400 font-bold mb-4">Yazı bulunamadı.</p>
@@ -102,7 +115,7 @@ const BlogDetail = () => {
             </motion.p>
             <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-black text-slate-400">
               <span className="flex items-center gap-1.5"><Calendar size={13} /> {formatPostDate(post.date)}</span>
-              <span className="flex items-center gap-1.5"><Clock size={13} /> {postReadTime(post)} okuma</span>
+              <span className="flex items-center gap-1.5"><Clock size={13} /> {post.readTime} okuma</span>
             </div>
           </div>
         </div>
@@ -115,13 +128,13 @@ const BlogDetail = () => {
         </div>
 
         <div className="bg-white rounded-[2.5rem] border-2 border-slate-100 shadow-sm p-6 md:p-12 lg:p-16">
-          {post.content.map((block, i) => <Block key={i} block={block} />)}
+          {body.content.map((block, i) => <Block key={i} block={block} />)}
 
           {/* Kaynaklar */}
           <div className="mt-12 pt-8 border-t border-slate-100">
             <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Kaynaklar</p>
             <ul className="flex flex-col gap-2.5">
-              {post.sources.map(s => (
+              {body.sources.map(s => (
                 <li key={s.url}>
                   <a href={s.url} target="_blank" rel="noopener noreferrer"
                     className="inline-flex items-start gap-2 text-sm font-bold text-slate-500 hover:text-neon-pink transition-colors">

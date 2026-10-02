@@ -3,6 +3,8 @@ import { ChevronRight, ArrowRight, ArrowUpRight, Phone, Mail, MapPin, Hammer, Ca
 import { Link } from 'react-router-dom';
 import { categories as catList, products as allProducts } from '../data/products';
 import { usePageMeta } from '../lib/usePageMeta';
+import { posts } from '../data/posts';
+import PostCard from '../components/PostCard';
 
 const HERO_IMAGE = '/images/galeri-yeni/galeri-1.jpg';
 const HERO_VIDEO = '/videos/hero.mp4';
@@ -578,6 +580,29 @@ const Home = () => {
                 Galeriye Git <ArrowRight size={16} />
               </span>
             </div>
+          </Link>
+        </div>
+      </section>
+
+      {/* Blog — rehber yazılar */}
+      <section className="pb-10 px-4 md:px-6 max-w-7xl mx-auto">
+        <div className="flex items-end justify-between mb-8">
+          <div>
+            <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Blog</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-900">Rehber <span className="text-neon-orange">Yazılar</span></h2>
+          </div>
+          <Link to="/blog" className="hidden md:flex items-center gap-2 text-neon-pink font-black hover:opacity-70 transition-opacity text-sm">
+            Tüm Yazılar <ArrowRight size={16} />
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {posts.slice(0, 3).map((post, i) => <PostCard key={post.id} post={post} index={i} titleAs="h3" />)}
+        </div>
+
+        <div className="text-center mt-6 md:hidden">
+          <Link to="/blog" className="inline-flex items-center gap-2 text-neon-pink font-black text-sm">
+            Tüm Yazıları Gör <ArrowRight size={16} />
           </Link>
         </div>
       </section>

@@ -5,6 +5,7 @@ import { ChevronLeft, Phone, ChevronRight, ZoomIn, X } from 'lucide-react';
 import { categoryBadge } from '../data/products';
 import { useProduct, useProducts } from '../lib/useSupabaseData';
 import { usePageMeta } from '../lib/usePageMeta';
+import { postForCategory } from '../data/posts';
 
 const SUBCATS: { key: string; catKey: string; label: string; match: (s: string) => boolean }[] = [
   { key: 'tekli',    catKey: 'trambolinler', label: 'Tekli Trambolinler',             match: s => s.startsWith('tekli-') },
@@ -74,6 +75,8 @@ const ProductDetail = () => {
       </div>
     );
   }
+
+  const guide = postForCategory(product.categoryKey);
 
   const related = allProducts
     .filter(p => p.categoryKey === product.categoryKey && p.slug !== product.slug)
@@ -292,6 +295,28 @@ const ProductDetail = () => {
           </div>
         </div>
       </div>
+
+      {/* Kategoriyle ilgili rehber yazı */}
+      {guide && (
+        <Link
+          to={`/blog/${guide.slug}`}
+          className="mt-12 flex items-center gap-4 md:gap-6 bg-white rounded-[2rem] border-2 border-slate-100 hover:border-slate-200 hover:shadow-xl transition-all group overflow-hidden p-3 md:p-4"
+        >
+          <img
+            loading="lazy" decoding="async"
+            src={guide.image} alt=""
+            className="w-24 h-20 md:w-40 md:h-28 rounded-2xl object-cover flex-shrink-0"
+          />
+          <div className="min-w-0 flex-1">
+            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Rehber Yazı</p>
+            <h2 className="text-base md:text-xl font-bold text-slate-800 leading-tight group-hover:text-neon-pink transition-colors">
+              {guide.title}
+            </h2>
+            <p className="hidden md:block text-sm font-bold text-slate-400 leading-relaxed mt-1">{guide.excerpt}</p>
+          </div>
+          <ChevronRight size={20} className="text-slate-300 group-hover:text-neon-pink transition-colors flex-shrink-0 mr-2" />
+        </Link>
+      )}
 
       {related.length > 0 && (
         <div className="mt-16 pt-10 border-t border-slate-100">
