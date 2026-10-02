@@ -55,19 +55,97 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://matraxoyungruplari.com/blog/trambolin-parki-nasil-kurulur</loc>
+    <loc>https://matraxoyungruplari.com/katalog?kategori=trambolinler</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://matraxoyungruplari.com/katalog?kategori=soft-play</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://matraxoyungruplari.com/katalog?kategori=trambolin-parklari</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://matraxoyungruplari.com/katalog?kategori=soft-play-gruplari</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://matraxoyungruplari.com/katalog?kategori=havuzlar</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://matraxoyungruplari.com/katalog?kategori=sisme-parklar</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://matraxoyungruplari.com/katalog?kategori=kres-kafe</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://matraxoyungruplari.com/katalog?kategori=top-havuzlari</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://matraxoyungruplari.com/blog/top-havuzu</loc>
     <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://matraxoyungruplari.com/blog/soft-play-malzeme-secimi</loc>
+    <loc>https://matraxoyungruplari.com/blog/trambolin-ureticisi</loc>
     <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://matraxoyungruplari.com/blog/kres-oyun-alani-tasarimi</loc>
+    <loc>https://matraxoyungruplari.com/blog/cocuk-oyun-grubu-ureticisi</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://matraxoyungruplari.com/blog/softplay-ureticisi</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://matraxoyungruplari.com/blog/ticari-trambolin</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://matraxoyungruplari.com/blog/olimpik-trambolin</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://matraxoyungruplari.com/blog/trambolin-yedek-parca</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://matraxoyungruplari.com/blog/cocuk-oyun-alani</loc>
     <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>

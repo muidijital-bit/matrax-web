@@ -19,10 +19,11 @@ export type Product = {
 
 export const categories = [
   { key: 'trambolinler',        name: 'Trambolinler',                  color: 'from-brand-pink to-brand-orange',  image: '/images/galeri-yeni/galeri-3.jpg' },
+  { key: 'top-havuzlari',       name: 'Top Havuzları',                 color: 'from-brand-pink to-brand-navy',    image: '/images/galeri-yeni/galeri-7.jpg' },
   { key: 'soft-play',           name: 'Soft Play Oyuncakları',         color: 'from-brand-navy to-brand-green',   image: '/images/galeri-yeni/galeri-22.jpg' },
   { key: 'trambolin-parklari',  name: 'Trambolin Parkları',            color: 'from-brand-green to-brand-orange', image: '/images/galeri-yeni/galeri-1.jpg' },
   { key: 'soft-play-gruplari',  name: 'Soft Play Oyun Grupları',       color: 'from-brand-orange to-brand-pink',  image: '/images/galeri-yeni/galeri-12.jpg' },
-  { key: 'havuzlar',            name: 'Top, Sünger & Kum Havuzları',   color: 'from-brand-pink to-brand-navy',    image: '/images/galeri-yeni/galeri-7.jpg' },
+  { key: 'havuzlar',            name: 'Sünger & Kum Havuzları',        color: 'from-brand-pink to-brand-navy',    image: '/images/galeri-yeni/galeri-20.jpg' },
   { key: 'sisme-parklar',       name: 'Şişme Parklar',                 color: 'from-brand-navy to-brand-pink',    image: '/images/products/sisme-parklar-sisme-park1.jpg' },
   { key: 'kres-kafe',           name: 'Kreş & Kafe Serisi',            color: 'from-brand-orange to-brand-green', image: '/images/galeri-yeni/galeri-29.png' },
 ];
@@ -30,6 +31,7 @@ export const categories = [
 // Kategori bazlı badge ve renk haritası — ürün rozetleri ve aksanlar için tek kaynak
 export const categoryBadge: Record<string, string> = {
   'trambolinler':       'bg-brand-pink text-white',
+  'top-havuzlari':      'bg-brand-pink text-white',
   'soft-play':          'bg-brand-navy text-white',
   'trambolin-parklari': 'bg-brand-green text-white',
   'soft-play-gruplari': 'bg-brand-orange text-white',
@@ -40,6 +42,7 @@ export const categoryBadge: Record<string, string> = {
 
 export const categoryAccent: Record<string, string> = {
   'trambolinler':       'brand-pink',
+  'top-havuzlari':      'brand-pink',
   'soft-play':          'brand-navy',
   'trambolin-parklari': 'brand-green',
   'soft-play-gruplari': 'brand-orange',
@@ -1333,8 +1336,8 @@ export const products: Product[] = [
     "slug": "standart-top-havuzu",
     "name": "Standart Top Havuzu",
     "code": "MX-HAV-01",
-    "category": "Top, Sünger & Kum Havuzları",
-    "categoryKey": "havuzlar",
+    "category": "Top Havuzları",
+    "categoryKey": "top-havuzlari",
     "badge": "bg-brand-orange text-white",
     "price": "Fiyat İste",
     "image": "/images/products/top-havuzlari.jpg",
@@ -3136,7 +3139,7 @@ export const products: Product[] = [
     "slug": "standart-kum-havuzu",
     "name": "Standart Kum Havuzu",
     "code": "MX-HAV-02",
-    "category": "Top, Sünger & Kum Havuzları",
+    "category": "Sünger & Kum Havuzları",
     "categoryKey": "havuzlar",
     "badge": "bg-brand-orange text-white",
     "price": "Fiyat İste",
@@ -3180,7 +3183,7 @@ export const products: Product[] = [
     "slug": "genis-tip-kum-havuzu",
     "name": "Geniş Tip Kum Havuzu",
     "code": "MX-HAV-03",
-    "category": "Top, Sünger & Kum Havuzları",
+    "category": "Sünger & Kum Havuzları",
     "categoryKey": "havuzlar",
     "badge": "bg-brand-orange text-white",
     "price": "Fiyat İste",

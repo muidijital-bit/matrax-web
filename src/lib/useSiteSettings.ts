@@ -99,7 +99,7 @@ const updateSchemaOrg = (settings: Record<string, string>) => {
 };
 
 export const useSiteSettings = () => {
-  const { pathname } = useLocation();
+  const { pathname, search } = useLocation();
   const [settings, setSettings] = useState<Record<string, string> | null>(null);
 
   useEffect(() => {
@@ -150,13 +150,14 @@ export const useSiteSettings = () => {
     });
   }, []);
 
-  // Her sayfa kendi adresini canonical / og:url olarak bildirir
+  // Her sayfa kendi adresini canonical / og:url olarak bildirir; katalogda kategori ayrı sayfa sayılır
+  const kategori = pathname === '/katalog' ? new URLSearchParams(search).get('kategori') : null;
   useEffect(() => {
     const base = (settings?.['site_url'] || DEFAULT_SITE_URL).replace(/\/+$/, '');
-    const url = `${base}${pathname}`;
+    const url = `${base}${pathname}${kategori ? `?kategori=${encodeURIComponent(kategori)}` : ''}`;
     applyCanonical(url);
     applyOg('og:url', url);
-  }, [settings, pathname]);
+  }, [settings, pathname, kategori]);
 
   // Paneldeki başlık/açıklama ana sayfaya aittir; iç sayfalar usePageMeta ile kendi değerlerini korur
   useEffect(() => {

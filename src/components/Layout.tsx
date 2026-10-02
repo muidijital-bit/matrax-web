@@ -408,10 +408,11 @@ const Layout = () => {
               <ul className="flex flex-col gap-3 mt-4">
                 {[
                   { name: 'Trambolinler', path: '/katalog?kategori=trambolinler' },
+                  { name: 'Top Havuzları', path: '/katalog?kategori=top-havuzlari' },
                   { name: 'Soft Play Oyuncakları', path: '/katalog?kategori=soft-play' },
                   { name: 'Trambolin Parkları', path: '/katalog?kategori=trambolin-parklari' },
                   { name: 'Soft Play Oyun Grupları', path: '/katalog?kategori=soft-play-gruplari' },
-                  { name: 'Top, Sünger & Kum Havuzları', path: '/katalog?kategori=havuzlar' },
+                  { name: 'Sünger & Kum Havuzları', path: '/katalog?kategori=havuzlar' },
                   { name: 'Yedek Parçalar', path: '/yedek-parcalar' },
                   { name: 'Kreş & Kafe Serisi', path: '/katalog?kategori=kres-kafe' },
                 ].map(c => (

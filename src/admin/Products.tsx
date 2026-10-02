@@ -518,16 +518,77 @@ const CategoriesTab = ({ categories, reload }: { categories: DbCategory[]; reloa
 
 type Tab = 'urunler' | 'kategoriler';
 
+// "Top Havuzları" ana kategorisine geçiş (bir kez çalışır):
+// kategoriyi Trambolinler'in altına ekler, top havuzu ürünlerini taşır,
+// eski "Top, Sünger & Kum Havuzları" kategorisini "Sünger & Kum Havuzları" olarak adlandırır.
+const TOP_HAVUZLARI = { key: 'top-havuzlari', name: 'Top Havuzları' };
+const OLD_POOL_NAME = 'Top, Sünger & Kum Havuzları';
+const NEW_POOL_NAME = 'Sünger & Kum Havuzları';
+
+const createTopHavuzlariCategory = async () => {
+  const { data, error } = await supabase.from('categories').select('*').order('sort_order');
+  if (error) throw new Error(error.message);
+  const cats = (data as DbCategory[]) ?? [];
+  if (cats.some(c => c.key === TOP_HAVUZLARI.key)) return;
+
+  // Trambolinler'den sonraki kategorileri bir sıra aşağı kaydır
+  const after = cats.find(c => c.key === 'trambolinler')?.sort_order ?? -1;
+  for (const c of cats.filter(c => c.sort_order > after)) {
+    const { error: e } = await supabase.from('categories').update({ sort_order: c.sort_order + 1 }).eq('id', c.id);
+    if (e) throw new Error(e.message);
+  }
+
+  const { error: insErr } = await supabase.from('categories').insert({
+    key: TOP_HAVUZLARI.key, name: TOP_HAVUZLARI.name,
+    color: 'from-brand-pink to-brand-navy', image: '/images/galeri-yeni/galeri-7.jpg', sort_order: after + 1,
+  });
+  if (insErr) throw new Error(insErr.message);
+
+  const { error: moveErr } = await supabase.from('products')
+    .update({ category_key: TOP_HAVUZLARI.key, category: TOP_HAVUZLARI.name, updated_at: new Date().toISOString() })
+    .eq('category_key', 'havuzlar').ilike('slug', '%top-havuzu%');
+  if (moveErr) throw new Error(moveErr.message);
+
+  const pools = cats.find(c => c.key === 'havuzlar');
+  if (pools && pools.name === OLD_POOL_NAME) {
+    const { error: renErr } = await supabase.from('categories')
+      .update({ name: NEW_POOL_NAME, image: '/images/galeri-yeni/galeri-20.jpg' }).eq('id', pools.id);
+    if (renErr) throw new Error(renErr.message);
+    const { error: prodErr } = await supabase.from('products').update({ category: NEW_POOL_NAME }).eq('category_key', 'havuzlar');
+    if (prodErr) throw new Error(prodErr.message);
+  }
+};
+
 const Products = () => {
   const [tab, setTab] = useState<Tab>('urunler');
   const [categories, setCategories] = useState<DbCategory[]>([]);
+  const [categoriesLoaded, setCategoriesLoaded] = useState(false);
+  const [migrating, setMigrating] = useState(false);
+  const [migrateError, setMigrateError] = useState<string|null>(null);
+  const [productsKey, setProductsKey] = useState(0);
 
   const loadCategories = async () => {
     const { data } = await supabase.from('categories').select('*').order('sort_order');
     setCategories((data as DbCategory[]) ?? []);
+    setCategoriesLoaded(true);
   };
 
   useEffect(() => { loadCategories(); }, []);
+
+  const needsTopHavuzlari = categoriesLoaded && categories.length > 0 && !categories.some(c => c.key === TOP_HAVUZLARI.key);
+
+  const runTopHavuzlari = async () => {
+    setMigrating(true);
+    setMigrateError(null);
+    try {
+      await createTopHavuzlariCategory();
+      await loadCategories();
+      setProductsKey(k => k + 1); // ürün listesini yeniden yükle
+    } catch (e) {
+      setMigrateError((e as Error).message);
+    }
+    setMigrating(false);
+  };
 
   return (
     <div>
@@ -552,8 +613,23 @@ const Products = () => {
         </div>
       </div>
 
+      {needsTopHavuzlari && (
+        <div className="mb-5 bg-amber-50 border border-amber-200 rounded-2xl p-5">
+          <p className="font-bold text-amber-900">"Top Havuzları" ana kategorisi henüz oluşturulmamış</p>
+          <p className="text-amber-700 text-sm mt-1 font-medium">
+            Butona bir kez tıklayın: "Top Havuzları" kategorisi Trambolinler'in altına eklenir, Standart Top Havuzu bu kategoriye taşınır
+            ve "{OLD_POOL_NAME}" kategorisinin adı "{NEW_POOL_NAME}" olur. Diğer kategori ve ürünler değişmez.
+          </p>
+          {migrateError && <p className="text-red-600 text-xs font-semibold mt-3 bg-red-50 px-3 py-2 rounded-xl">{migrateError}</p>}
+          <button onClick={runTopHavuzlari} disabled={migrating}
+            className="mt-3 inline-flex items-center gap-2 px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-sm font-bold transition-colors disabled:opacity-50">
+            {migrating ? 'Oluşturuluyor...' : 'Top Havuzları Kategorisini Oluştur'}
+          </button>
+        </div>
+      )}
+
       {tab === 'urunler'
-        ? <ProductsTab categories={categories} />
+        ? <ProductsTab key={productsKey} categories={categories} />
         : <CategoriesTab categories={categories} reload={loadCategories} />
       }
     </div>

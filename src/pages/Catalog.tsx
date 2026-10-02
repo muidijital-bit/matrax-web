@@ -51,6 +51,18 @@ const SUBCATS: Record<string, Sub[]> = {
   ],
 };
 
+// Panelde henüz oluşturulmamış kategori istendiğinde ürünlerin şu an durduğu kategori gösterilir
+const CATEGORY_FALLBACK: Record<string, string> = { 'top-havuzlari': 'havuzlar' };
+
+// Kategoriye özel sayfa başlığı ve açıklaması (yoksa kategori adından üretilir)
+const CATEGORY_META: Record<string, { title: string; description: string; keywords: string }> = {
+  'top-havuzlari': {
+    title: 'Top Havuzları — Top Havuzu Modelleri ve Fiyatları | Matrax',
+    description: 'Kreş, kafe, AVM ve oyun merkezleri için ölçüye özel üretilen top havuzu modelleri. 8 cm antibakteriyel toplar, EN-1176 uyumlu üretim ve anahtar teslim kurulum.',
+    keywords: 'top havuzu, top havuzları, top havuzu fiyatları, kreş top havuzu, oyun grubu top havuzu',
+  },
+};
+
 // Bir ürünün alt kategori keyini bul — match sırasına göre ilk eşleşen
 const subKeyFor = (p: Product): string | null => {
   const subs = SUBCATS[p.categoryKey];
@@ -68,7 +80,7 @@ const capacityFor = (p: Product): number => {
 
 // Tüm ürünler için akıllı sıralama — sort_order zaten DB'den geliyor; bu fonksiyon ek sıralama için
 const smartSort = (a: Product, b: Product) => {
-  const catOrder = ['trambolinler','soft-play','trambolin-parklari','soft-play-gruplari','havuzlar','sisme-parklar','kres-kafe'];
+  const catOrder = ['trambolinler','top-havuzlari','soft-play','trambolin-parklari','soft-play-gruplari','havuzlar','sisme-parklar','kres-kafe'];
   const ca = catOrder.indexOf(a.categoryKey);
   const cb = catOrder.indexOf(b.categoryKey);
   if (ca !== cb) return (ca === -1 ? 99 : ca) - (cb === -1 ? 99 : cb);
@@ -90,11 +102,6 @@ const smartSort = (a: Product, b: Product) => {
 };
 
 const Catalog = () => {
-  usePageMeta(
-    'Ürünler | Matrax Oyun Grupları',
-    'Trambolinler, soft play oyuncakları, trambolin parkları, top havuzları ve şişme parklar. EN-1176 sertifikalı tüm ürünlerimizi inceleyin.',
-    'trambolin kataloğu, soft play katalog, oyun grubu fiyat, trambolin parkı satın al'
-  );
   const { products: mockProducts } = useProducts();
   const { categories: catList } = useCategories();
   const categories = catList.map(c => ({ label: c.name, value: c.key }));
@@ -103,7 +110,18 @@ const Catalog = () => {
   const initial = searchParams.get('kategori') || firstCat;
   const initialSub = searchParams.get('alt') || 'all';
   const queryParam = searchParams.get('q') || '';
-  const [activeTab, setActiveTab] = useState(initial);
+  const [selectedTab, setActiveTab] = useState(initial);
+  const activeTab = catList.some(c => c.key === selectedTab) ? selectedTab : (CATEGORY_FALLBACK[selectedTab] ?? selectedTab);
+  const activeCat = searchParams.get('kategori') ? catList.find(c => c.key === activeTab) : undefined;
+
+  const catMeta = activeCat && CATEGORY_META[activeCat.key];
+  usePageMeta(
+    catMeta?.title ?? (activeCat ? `${activeCat.name} | Matrax Oyun Grupları` : 'Ürünler | Matrax Oyun Grupları'),
+    catMeta?.description ?? (activeCat
+      ? `Matrax ${activeCat.name} kategorisindeki tüm modelleri inceleyin. EN-1176 sertifikalı üretim, ölçüye özel imalat ve Türkiye geneli anahtar teslim kurulum.`
+      : 'Trambolinler, top havuzları, soft play oyuncakları, trambolin parkları ve şişme parklar. EN-1176 sertifikalı tüm ürünlerimizi inceleyin.'),
+    catMeta?.keywords ?? 'trambolin kataloğu, soft play katalog, oyun grubu fiyat, trambolin parkı satın al'
+  );
   const [activeSub, setActiveSub] = useState(initialSub);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [mobilePending, setMobilePending] = useState<string>('');
@@ -111,7 +129,7 @@ const Catalog = () => {
   useEffect(() => {
     const katParam = searchParams.get('kategori');
     const next = katParam || firstCat;
-    if (next !== activeTab) setActiveTab(next);
+    if (next !== selectedTab) setActiveTab(next);
     const nextSub = searchParams.get('alt') || 'all';
     if (nextSub !== activeSub) setActiveSub(nextSub);
   // firstCat kasıtlı olarak bağımlılık dışında — Supabase yüklenince activeTab'ı bozmasın
@@ -309,7 +327,7 @@ const Catalog = () => {
             {queryParam ? (
               <>"<span className="text-neon-pink">{queryParam}</span>" için sonuçlar</>
             ) : (
-              <span className="text-neon-pink">Ürünler</span>
+              <span className="text-neon-pink">{activeCat?.name ?? 'Ürünler'}</span>
             )}
           </h1>
           {queryParam && (

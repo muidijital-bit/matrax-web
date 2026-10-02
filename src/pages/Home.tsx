@@ -1,9 +1,11 @@
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronRight, ArrowRight, ArrowUpRight, Phone, Mail, MapPin, Hammer, Camera, Calendar, Wrench } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { categories as catList, products as allProducts } from '../data/products';
 import { usePageMeta } from '../lib/usePageMeta';
-import { posts } from '../data/posts';
+import { supabase } from '../lib/supabase';
+import { usePosts } from '../lib/usePosts';
 import PostCard from '../components/PostCard';
 
 const HERO_IMAGE = '/images/galeri-yeni/galeri-1.jpg';
@@ -132,9 +134,9 @@ const pickFeatured = (codes: string[]) =>
 
 const featured = pickFeatured(['MX-MEGA-2026', 'MX-OKA-9900', 'MX-DIS-9900']).slice(0, 3);
 
-// Anasayfada Kreş & Kafe gizli — 6 kategori gösterilir
+// Anasayfada Kreş & Kafe ile Sünger & Kum Havuzları gizli — 6 kategori gösterilir
 const categories = catList
-  .filter(c => c.key !== 'kres-kafe')
+  .filter(c => c.key !== 'kres-kafe' && c.key !== 'havuzlar')
   .map((c, i) => {
     const sample = allProducts.find(p => p.categoryKey === c.key);
     return { id: i + 1, ...c, image: sample?.image || c.image };
@@ -253,7 +255,23 @@ const ProjectsSection = () => (
   </section>
 );
 
+// Kategori kartlarındaki ürün sayıları panelden (aktif ürünler); yanıt gelene kadar yerel veri kullanılır
+const useCategoryCounts = () => {
+  const [counts, setCounts] = useState<Record<string, number> | null>(null);
+  useEffect(() => {
+    supabase.from('products').select('category_key').eq('is_active', true).then(({ data }) => {
+      if (!data || data.length === 0) return;
+      const next: Record<string, number> = {};
+      for (const row of data as { category_key: string }[]) next[row.category_key] = (next[row.category_key] ?? 0) + 1;
+      setCounts(next);
+    });
+  }, []);
+  return counts;
+};
+
 const Home = () => {
+  const posts = usePosts();
+  const counts = useCategoryCounts();
   usePageMeta(
     'Matrax Oyun Grupları — Trambolin Parkları, Soft Play & Top Havuzu Üreticisi',
     'EN-1176 sertifikalı trambolin parkı, soft play oyun grubu ve top havuzu üretimi. 20 yılı aşkın tecrübe, anahtar teslim Türkiye geneli kurulum.',
@@ -277,7 +295,7 @@ const Home = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {categories.map((cat, i) => {
-            const count = allProducts.filter(p => p.categoryKey === cat.key).length;
+            const count = counts?.[cat.key] ?? allProducts.filter(p => p.categoryKey === cat.key).length;
             return (
               <motion.div
                 key={cat.id}
