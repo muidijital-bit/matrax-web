@@ -31,7 +31,7 @@ const values = [
 ];
 
 const milestones = [
-  { year: '2009', text: 'Matrax Oyun Grupları kuruldu, ilk trambolin parkı İstanbul\'da açıldı.', color: 'bg-neon-pink' },
+  { year: '2005', text: 'Matrax Oyun Grupları kuruldu, ilk trambolin parkı İstanbul\'da açıldı.', color: 'bg-neon-pink' },
   { year: '2013', text: 'Üretim kapasitesi genişletildi, Türkiye genelinde 100+ proje tamamlandı.', color: 'bg-neon-blue' },
   { year: '2017', text: 'Soft play, kreş ve top havuzu serileri ürün gamına eklendi.', color: 'bg-brand-green' },
   { year: '2021', text: 'Modüler MEGA parkur sistemi geliştirilerek piyasaya sunuldu.', color: 'bg-brand-pink' },
@@ -177,7 +177,7 @@ const About = () => {
       <section className="py-20 px-4 md:px-6 max-w-7xl mx-auto">
         <div className="text-center mb-12">
           <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Tarihçemiz</p>
-          <h2 className="text-3xl md:text-5xl font-bold text-slate-800">15 Yıllık <span className="text-neon-orange">Yolculuğumuz</span></h2>
+          <h2 className="text-3xl md:text-5xl font-bold text-slate-800">20 Yılı Aşkın <span className="text-neon-orange">Yolculuğumuz</span></h2>
         </div>
 
         <div className="relative">
