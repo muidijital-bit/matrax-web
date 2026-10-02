@@ -26,6 +26,7 @@ const ProtectedRoute = lazy(() => import('./admin/ProtectedRoute'));
 const Dashboard = lazy(() => import('./admin/Dashboard'));
 const Products = lazy(() => import('./admin/Products'));
 const SpareParts = lazy(() => import('./admin/SpareParts'));
+const AdminPosts = lazy(() => import('./admin/Posts'));
 const AdminSettings = lazy(() => import('./admin/Settings'));
 
 const PageFallback = () => (
@@ -72,6 +73,7 @@ function App() {
           <Route path="dashboard" element={<Suspense fallback={<AdminFallback />}><Dashboard /></Suspense>} />
           <Route path="urunler" element={<Suspense fallback={<AdminFallback />}><Products /></Suspense>} />
           <Route path="yedek-parcalar" element={<Suspense fallback={<AdminFallback />}><SpareParts /></Suspense>} />
+          <Route path="blog" element={<Suspense fallback={<AdminFallback />}><AdminPosts /></Suspense>} />
           <Route path="ayarlar" element={<Suspense fallback={<AdminFallback />}><AdminSettings /></Suspense>} />
         </Route>
       </Route>

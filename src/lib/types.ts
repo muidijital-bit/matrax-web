@@ -59,3 +59,24 @@ export type SiteSetting = {
   value: string | null;
   updated_at: string;
 };
+
+export type DbPost = {
+  id: number;
+  slug: string;
+  title: string;
+  excerpt: string | null;
+  image: string | null;
+  category: string;
+  badge_color: string | null;
+  keywords: string | null;
+  published_at: string; // YYYY-AA-GG
+  read_minutes: number;
+  category_keys: string[];
+  related_label: string | null;
+  related_path: string | null;
+  content: import('../data/postBodies').PostBlock[];
+  sources: { label: string; url: string }[];
+  is_published: boolean;
+  created_at: string;
+  updated_at: string;
+};

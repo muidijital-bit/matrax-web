@@ -6,6 +6,7 @@ import { categoryBadge } from '../data/products';
 import { useProduct, useProducts } from '../lib/useSupabaseData';
 import { usePageMeta } from '../lib/usePageMeta';
 import { postForCategory } from '../data/posts';
+import { usePosts } from '../lib/usePosts';
 
 const SUBCATS: { key: string; catKey: string; label: string; match: (s: string) => boolean }[] = [
   { key: 'tekli',    catKey: 'trambolinler', label: 'Tekli Trambolinler',             match: s => s.startsWith('tekli-') },
@@ -17,10 +18,15 @@ const SUBCATS: { key: string; catKey: string; label: string; match: (s: string) 
   { key: 'portatif', catKey: 'trambolinler', label: 'Portatif (Katlanır) Trambolin',  match: s => s.includes('portatif') },
 ];
 
+// Kategori rehberinin uymadığı alt gruplar: ev tipi trambolinlerde rehber kartı gösterilmez,
+// salto ticari trambolin yazısına bağlanır
+const SUBCAT_GUIDE: Record<string, string | null> = { tekli: null, fitness: null, portatif: null, salto: 'ticari-trambolin' };
+
 const ProductDetail = () => {
   const { slug } = useParams();
   const { product, loading } = useProduct(slug ?? '');
   const { products: allProducts } = useProducts();
+  const posts = usePosts();
   const [activeImg, setActiveImg] = useState(0);
   const [zoomed, setZoomed] = useState(false);
   const [zoomIdx, setZoomIdx] = useState(0);
@@ -76,14 +82,16 @@ const ProductDetail = () => {
     );
   }
 
-  const guide = postForCategory(product.categoryKey);
+  const subcat = SUBCATS.find(s => s.catKey === product.categoryKey && s.match(product.slug));
+  const guideOverride = subcat && subcat.key in SUBCAT_GUIDE ? SUBCAT_GUIDE[subcat.key] : undefined;
+  const guide = guideOverride === undefined
+    ? postForCategory(posts, product.categoryKey)
+    : posts.find(p => p.slug === guideOverride);
 
   const related = allProducts
     .filter(p => p.categoryKey === product.categoryKey && p.slug !== product.slug)
     .sort(() => Math.random() - 0.5)
     .slice(0, 3);
-
-  const subcat = SUBCATS.find(s => s.catKey === product.categoryKey && s.match(product.slug));
 
   // images boşsa image'ı fallback olarak kullan
   const displayImages = product.images?.length
@@ -302,11 +310,13 @@ const ProductDetail = () => {
           to={`/blog/${guide.slug}`}
           className="mt-12 flex items-center gap-4 md:gap-6 bg-white rounded-[2rem] border-2 border-slate-100 hover:border-slate-200 hover:shadow-xl transition-all group overflow-hidden p-3 md:p-4"
         >
-          <img
-            loading="lazy" decoding="async"
-            src={guide.image} alt=""
-            className="w-24 h-20 md:w-40 md:h-28 rounded-2xl object-cover flex-shrink-0"
-          />
+          {guide.image && (
+            <img
+              loading="lazy" decoding="async"
+              src={guide.image} alt=""
+              className="w-24 h-20 md:w-40 md:h-28 rounded-2xl object-cover flex-shrink-0"
+            />
+          )}
           <div className="min-w-0 flex-1">
             <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Rehber Yazı</p>
             <h2 className="text-base md:text-xl font-bold text-slate-800 leading-tight group-hover:text-neon-pink transition-colors">

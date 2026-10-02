@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import {
-  LayoutDashboard, Package, Wrench,
+  LayoutDashboard, Package, Wrench, FileText,
   Settings, LogOut, Menu, X, ExternalLink,
 } from 'lucide-react';
 
@@ -10,6 +10,7 @@ const navItems = [
   { path: '/admin/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
   { path: '/admin/urunler', icon: Package, label: 'Ürünler & Kategoriler' },
   { path: '/admin/yedek-parcalar', icon: Wrench, label: 'Yedek Parçalar' },
+  { path: '/admin/blog', icon: FileText, label: 'Blog Yazıları' },
   { path: '/admin/ayarlar', icon: Settings, label: 'Site Ayarları' },
 ];
 

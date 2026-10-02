@@ -3,35 +3,38 @@ import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { categories as localCategories, products as localProducts } from '../data/products';
 import { spareCategories as localSpareCategories } from '../data/spareParts';
-import { Package, Wrench, ArrowRight, Download, CheckCircle, AlertCircle } from 'lucide-react';
+import { Package, Wrench, FileText, ArrowRight, Download, CheckCircle, AlertCircle } from 'lucide-react';
 
 type Stats = {
   products: number;
   categories: number;
   spareParts: number;
   spareCategories: number;
+  posts: number;
 };
 
 type SeedStatus = 'idle' | 'loading' | 'success' | 'error';
 
 const Dashboard = () => {
-  const [stats, setStats] = useState<Stats>({ products: 0, categories: 0, spareParts: 0, spareCategories: 0 });
+  const [stats, setStats] = useState<Stats>({ products: 0, categories: 0, spareParts: 0, spareCategories: 0, posts: 0 });
   const [loading, setLoading] = useState(true);
   const [seedStatus, setSeedStatus] = useState<SeedStatus>('idle');
   const [seedLog, setSeedLog] = useState<string[]>([]);
 
   const fetchStats = async () => {
-    const [p, c, sp, sc] = await Promise.all([
+    const [p, c, sp, sc, bp] = await Promise.all([
       supabase.from('products').select('id', { count: 'exact', head: true }),
       supabase.from('categories').select('id', { count: 'exact', head: true }),
       supabase.from('spare_parts').select('id', { count: 'exact', head: true }),
       supabase.from('spare_categories').select('id', { count: 'exact', head: true }),
+      supabase.from('posts').select('id', { count: 'exact', head: true }),
     ]);
     setStats({
       products: p.count ?? 0,
       categories: c.count ?? 0,
       spareParts: sp.count ?? 0,
       spareCategories: sc.count ?? 0,
+      posts: bp.count ?? 0,
     });
     setLoading(false);
   };
@@ -125,6 +128,7 @@ const Dashboard = () => {
   const cards = [
     { label: 'Ürünler', value: stats.products, icon: Package, color: 'bg-indigo-500', path: '/admin/urunler' },
     { label: 'Yedek Parçalar', value: stats.spareParts, icon: Wrench, color: 'bg-amber-500', path: '/admin/yedek-parcalar' },
+    { label: 'Blog Yazıları', value: stats.posts, icon: FileText, color: 'bg-emerald-500', path: '/admin/blog' },
   ];
 
   const isEmpty = !loading && stats.products === 0 && stats.categories === 0 && stats.spareParts === 0 && stats.spareCategories === 0;
@@ -188,13 +192,13 @@ const Dashboard = () => {
 
       {/* Stats */}
       {loading ? (
-        <div className="grid grid-cols-2 gap-4">
-          {[...Array(2)].map((_, i) => (
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          {[...Array(3)].map((_, i) => (
             <div key={i} className="bg-white rounded-2xl p-5 h-28 animate-pulse" />
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           {cards.map(card => {
             const Icon = card.icon;
             return (
@@ -226,6 +230,9 @@ const Dashboard = () => {
           </Link>
           <Link to="/admin/yedek-parcalar" className="inline-flex items-center gap-2 px-4 py-2 bg-amber-50 text-amber-700 rounded-xl text-sm font-semibold hover:bg-amber-100 transition-colors">
             <Wrench size={15} /> Yedek Parçalar
+          </Link>
+          <Link to="/admin/blog" className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-700 rounded-xl text-sm font-semibold hover:bg-emerald-100 transition-colors">
+            <FileText size={15} /> Blog Yazıları
           </Link>
           <Link to="/admin/ayarlar" className="inline-flex items-center gap-2 px-4 py-2 bg-slate-100 text-slate-700 rounded-xl text-sm font-semibold hover:bg-slate-200 transition-colors">
             Favicon & SEO Ayarları
