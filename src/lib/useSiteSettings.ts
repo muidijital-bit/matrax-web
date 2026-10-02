@@ -1,5 +1,8 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { supabase } from './supabase';
+
+const DEFAULT_SITE_URL = 'https://matraxoyungruplari.com';
 
 const applyMeta = (name: string, content: string) => {
   if (!content) return;
@@ -19,6 +22,12 @@ const applyFavicon = (url: string) => {
   if (!url) return;
   let link = document.querySelector<HTMLLinkElement>('link[rel~="icon"]');
   if (!link) { link = document.createElement('link'); link.rel = 'icon'; document.head.appendChild(link); }
+  link.href = url;
+};
+
+const applyCanonical = (url: string) => {
+  let link = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+  if (!link) { link = document.createElement('link'); link.rel = 'canonical'; document.head.appendChild(link); }
   link.href = url;
 };
 
@@ -44,7 +53,7 @@ const updateSchemaOrg = (settings: Record<string, string>) => {
   const url   = settings['site_url']        || 'https://matraxoyungruplari.com';
   const phone = settings['business_phone']  || '';
   const email = settings['business_email']  || '';
-  const city  = settings['business_city']   || 'İstanbul';
+  const city  = settings['business_city']   || 'Ankara';
   const addr  = settings['business_address']|| '';
   const year  = settings['business_founding_year'] || '2005';
   const ig    = settings['instagram_url']   || '';
@@ -90,6 +99,9 @@ const updateSchemaOrg = (settings: Record<string, string>) => {
 };
 
 export const useSiteSettings = () => {
+  const { pathname } = useLocation();
+  const [settings, setSettings] = useState<Record<string, string> | null>(null);
+
   useEffect(() => {
     supabase.from('site_settings').select('*').then(({ data }) => {
       if (!data || data.length === 0) return;
@@ -99,24 +111,16 @@ export const useSiteSettings = () => {
         s[row.key] = row.value ?? '';
       });
 
-      // Başlık
-      if (s['site_title']) document.title = s['site_title'];
+      setSettings(s);
 
       // Temel meta
-      applyMeta('description',  s['meta_description'] || '');
-      applyMeta('keywords',     s['keywords'] || '');
       applyMeta('robots',       s['robots'] || 'index, follow');
 
       // Open Graph
-      applyOg('og:title',       s['og_title'] || s['site_title'] || '');
-      applyOg('og:description', s['og_description'] || s['meta_description'] || '');
       applyOg('og:image',       s['og_image'] || '');
-      if (s['site_url']) applyOg('og:url', s['site_url']);
 
       // Twitter
       applyMeta('twitter:card',        s['twitter_card'] || 'summary_large_image');
-      applyMeta('twitter:title',        s['og_title'] || s['site_title'] || '');
-      applyMeta('twitter:description',  s['og_description'] || s['meta_description'] || '');
       applyMeta('twitter:image',        s['og_image'] || '');
 
       // GSC doğrulama
@@ -145,4 +149,28 @@ export const useSiteSettings = () => {
       updateSchemaOrg(s);
     });
   }, []);
+
+  // Her sayfa kendi adresini canonical / og:url olarak bildirir
+  useEffect(() => {
+    const base = (settings?.['site_url'] || DEFAULT_SITE_URL).replace(/\/+$/, '');
+    const url = `${base}${pathname}`;
+    applyCanonical(url);
+    applyOg('og:url', url);
+  }, [settings, pathname]);
+
+  // Paneldeki başlık/açıklama ana sayfaya aittir; iç sayfalar usePageMeta ile kendi değerlerini korur
+  useEffect(() => {
+    if (!settings || pathname !== '/') return;
+    const s = settings;
+
+    if (s['site_title']) document.title = s['site_title'];
+    applyMeta('description',  s['meta_description'] || '');
+    applyMeta('keywords',     s['keywords'] || '');
+
+    applyOg('og:title',       s['og_title'] || s['site_title'] || '');
+    applyOg('og:description', s['og_description'] || s['meta_description'] || '');
+
+    applyMeta('twitter:title',        s['og_title'] || s['site_title'] || '');
+    applyMeta('twitter:description',  s['og_description'] || s['meta_description'] || '');
+  }, [settings, pathname]);
 };

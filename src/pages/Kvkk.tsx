@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { usePageMeta } from '../lib/usePageMeta';
 import { ShieldCheck, FileText, Lock, Mail } from 'lucide-react';
 
 const sections = [
@@ -32,7 +33,12 @@ const sections = [
   },
 ];
 
-const Kvkk = () => (
+const Kvkk = () => {
+  usePageMeta(
+    'KVKK Aydınlatma Metni | Matrax Oyun Grupları',
+    'Matrax Oyun Grupları KVKK aydınlatma metni: kişisel verilerinizin hangi amaçlarla işlendiği, kimlere aktarıldığı ve 6698 sayılı Kanun kapsamındaki haklarınız.'
+  );
+  return (
   <div className="bg-slate-50">
     {/* Header */}
     <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 text-white">
@@ -96,6 +102,7 @@ const Kvkk = () => (
       </div>
     </section>
   </div>
-);
+  );
+};
 
 export default Kvkk;

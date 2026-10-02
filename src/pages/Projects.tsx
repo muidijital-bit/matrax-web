@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MapPin, Calendar, ArrowUpRight, Briefcase, X } from 'lucide-react';
+import { usePageMeta } from '../lib/usePageMeta';
 
 const filters = ['Tümü', 'Trambolin Parkı', 'Soft Play', 'Kreş & Kafe', 'Top Havuzu'];
 
@@ -158,6 +159,11 @@ const ProjectModal = ({ project, onClose }: { project: Project; onClose: () => v
 );
 
 const Projects = () => {
+  usePageMeta(
+    'Projelerimiz | Matrax Oyun Grupları',
+    'Matrax tarafından kurulan trambolin parkı, soft play, kreş ve kafe oyun alanı ile top havuzu projelerinden örnekler.',
+    'trambolin parkı projeleri, soft play kurulum, oyun alanı referans, matrax projeler'
+  );
   const [active, setActive] = useState('Tümü');
   const [selected, setSelected] = useState<Project | null>(null);
   const filtered = active === 'Tümü' ? projects : projects.filter(p => p.category === active);

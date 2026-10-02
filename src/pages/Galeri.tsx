@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronLeft, ChevronRight, Camera } from 'lucide-react';
+import { usePageMeta } from '../lib/usePageMeta';
 
 const allImages = [
   ...Array.from({ length: 28 }, (_, i) => `/images/galeri-yeni/galeri-${i + 1}.jpg`),
@@ -25,6 +26,11 @@ const filters = [
 ] as const;
 
 const Galeri = () => {
+  usePageMeta(
+    'Galeri | Matrax Oyun Grupları',
+    'Matrax kurulumlarından fotoğraflar: trambolin sahaları, soft play oyun grupları, top havuzları, tırmanma duvarları ve park tasarımları.',
+    'trambolin parkı görselleri, soft play fotoğrafları, oyun grubu kurulum, matrax galeri'
+  );
   const [active, setActive] = useState<number | null>(null);
   const [filter, setFilter] = useState<typeof filters[number]['key']>('tumu');
 

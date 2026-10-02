@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { usePageMeta } from '../lib/usePageMeta';
 import { Cookie, Settings2, BarChart3, Megaphone, ToggleRight } from 'lucide-react';
 
 const types = [
@@ -47,7 +48,12 @@ const sections = [
   },
 ];
 
-const CerezPolitikasi = () => (
+const CerezPolitikasi = () => {
+  usePageMeta(
+    'Çerez Politikası | Matrax Oyun Grupları',
+    'Matrax Oyun Grupları web sitesinde kullanılan çerez türleri, kullanım amaçları ve çerez tercihlerinizi nasıl yönetebileceğiniz.'
+  );
+  return (
   <div className="bg-slate-50">
     {/* Header */}
     <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 text-white">
@@ -113,6 +119,7 @@ const CerezPolitikasi = () => (
       </div>
     </section>
   </div>
-);
+  );
+};
 
 export default CerezPolitikasi;
