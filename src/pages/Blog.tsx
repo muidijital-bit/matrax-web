@@ -1,9 +1,15 @@
 import { motion } from 'framer-motion';
 import { Clock, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { posts } from '../data/posts';
+import { posts, formatPostDate, postReadTime } from '../data/posts';
+import { usePageMeta } from '../lib/usePageMeta';
 
 const Blog = () => {
+  usePageMeta(
+    'Blog | Matrax Oyun Grupları',
+    'Trambolin parkı kurulumu, soft play malzeme seçimi, kreş ve çocuk kafesi oyun alanı tasarımı ve güvenlik standartları üzerine rehber yazılar.',
+    'trambolin parkı rehberi, soft play malzeme, oyun alanı tasarımı, EN 1176, oyun grubu blog'
+  );
   return (
     <>
       {/* Hero */}
@@ -47,7 +53,7 @@ const Blog = () => {
               transition={{ delay: i * 0.1, type: 'spring', stiffness: 200, damping: 20 }}
               className="bg-white rounded-[2.5rem] border-2 border-slate-100 hover:border-slate-200 hover:shadow-2xl transition-all group overflow-hidden"
             >
-              <div className="relative aspect-[16/9] overflow-hidden">
+              <Link to={`/blog/${post.slug}`} tabIndex={-1} aria-hidden="true" className="block relative aspect-[16/9] overflow-hidden">
                 <img loading="lazy" decoding="async"
                   src={post.image}
                   alt={post.title}
@@ -56,16 +62,16 @@ const Blog = () => {
                 <span className={`absolute top-4 left-4 text-[10px] font-black px-3 py-1.5 rounded-full ${post.badgeColor}`}>
                   {post.category}
                 </span>
-              </div>
+              </Link>
 
               <div className="p-6">
                 <div className="flex items-center gap-3 text-xs font-black text-slate-400 mb-3">
-                  <span>{post.date}</span>
+                  <span>{formatPostDate(post.date)}</span>
                   <span>·</span>
-                  <span className="flex items-center gap-1"><Clock size={11} /> {post.readTime} okuma</span>
+                  <span className="flex items-center gap-1"><Clock size={11} /> {postReadTime(post)} okuma</span>
                 </div>
                 <h2 className="text-xl font-bold text-slate-800 mb-3 leading-tight group-hover:text-neon-pink transition-colors">
-                  {post.title}
+                  <Link to={`/blog/${post.slug}`}>{post.title}</Link>
                 </h2>
                 <p className="text-sm font-bold text-slate-400 leading-relaxed mb-5 line-clamp-3">
                   {post.excerpt}

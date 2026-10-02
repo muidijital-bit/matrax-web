@@ -15,6 +15,7 @@ const Imalat = lazy(() => import('./pages/Imalat'));
 const Galeri = lazy(() => import('./pages/Galeri'));
 const YedekParcalar = lazy(() => import('./pages/YedekParcalar'));
 const Blog = lazy(() => import('./pages/Blog'));
+const BlogDetail = lazy(() => import('./pages/BlogDetail'));
 const Kvkk = lazy(() => import('./pages/Kvkk'));
 const CerezPolitikasi = lazy(() => import('./pages/CerezPolitikasi'));
 
@@ -58,6 +59,7 @@ function App() {
         <Route path="cerez-politikasi" element={<ErrorBoundary><Suspense fallback={<PageFallback />}><CerezPolitikasi /></Suspense></ErrorBoundary>} />
         <Route path="iletisim" element={<ErrorBoundary><Suspense fallback={<PageFallback />}><Contact /></Suspense></ErrorBoundary>} />
         <Route path="blog" element={<ErrorBoundary><Suspense fallback={<PageFallback />}><Blog /></Suspense></ErrorBoundary>} />
+        <Route path="blog/:slug" element={<ErrorBoundary><Suspense fallback={<PageFallback />}><BlogDetail /></Suspense></ErrorBoundary>} />
       </Route>
 
       {/* Admin — login */}

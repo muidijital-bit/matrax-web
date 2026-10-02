@@ -39,6 +39,7 @@ const navLinks: NavItem[] = [
   { name: 'İmalat', path: '/imalat' },
   { name: 'Yedek Parça', path: '/yedek-parcalar' },
   { name: 'Galeri', path: '/galeri' },
+  { name: 'Blog', path: '/blog' },
 ];
 
 const DesktopNavItem = ({ item, currentPath, dark = false }: { item: NavItem; currentPath: string; dark?: boolean }) => {
@@ -47,7 +48,7 @@ const DesktopNavItem = ({ item, currentPath, dark = false }: { item: NavItem; cu
 
   const isActive = item.children
     ? item.children.some(c => c.path === currentPath)
-    : currentPath === item.path;
+    : currentPath === item.path || (item.path !== '/' && currentPath.startsWith(`${item.path}/`));
 
   const baseText = dark
     ? `text-white/95 hover:text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.55)] ${isActive ? 'text-white font-bold' : ''}`
@@ -209,13 +210,13 @@ const Layout = () => {
             />
           </Link>
 
-          <div className="hidden lg:flex items-center gap-5 xl:gap-6">
+          <div className="hidden lg:flex items-center gap-3 xl:gap-6">
             {navLinks.map(item => (
               <DesktopNavItem key={item.name} item={item} currentPath={location.pathname} dark={isDark} />
             ))}
             <Link
               to="/iletisim"
-              className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-bold text-sm transition-all hover:scale-105 ${
+              className={`inline-flex items-center gap-2 px-4 xl:px-5 py-2.5 rounded-full font-bold text-sm transition-all hover:scale-105 ${
                 isDark
                   ? 'bg-green-500/30 border border-green-400/40 text-white hover:bg-green-500/50 backdrop-blur-sm'
                   : 'bg-neon-green text-white hover:shadow-lg hover:shadow-brand-green/30'
@@ -383,6 +384,7 @@ const Layout = () => {
                   { name: 'İmalat', path: '/imalat' },
                   { name: 'Galeri', path: '/galeri' },
                   { name: 'Yedek Parça', path: '/yedek-parcalar' },
+                  { name: 'Blog', path: '/blog' },
                   { name: 'KVKK', path: '/kvkk' },
                   { name: 'Çerez Politikası', path: '/cerez-politikasi' },
                   { name: 'İletişim', path: '/iletisim' },
