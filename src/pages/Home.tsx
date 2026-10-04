@@ -523,12 +523,10 @@ const Home = () => {
 
       <ProjectsSection />
 
-      {/* Yedek Parça — büyük öne çıkan banner */}
+      {/* Yedek Parça — büyük öne çıkan banner. Bandın tamamı "Yedek Parçaları İncele" bağlantısıyla tıklanır
+          (bağlantının ::after katmanı bandı kaplar); WhatsApp düğmesi bu katmanın üstündedir. */}
       <section className="px-4 md:px-6 pb-6 max-w-7xl mx-auto">
-        <Link
-          to="/yedek-parcalar"
-          className="group relative block rounded-[2rem] md:rounded-[2.5rem] overflow-hidden shadow-xl hover:shadow-2xl transition-all"
-        >
+        <div className="group relative block rounded-[2rem] md:rounded-[2.5rem] overflow-hidden shadow-xl hover:shadow-2xl transition-all">
           <div className="absolute inset-0 bg-gradient-to-br from-brand-teal via-brand-navy to-slate-900" />
           <div className="absolute -top-20 -right-20 w-72 h-72 bg-neon-pink/30 rounded-full blur-3xl pointer-events-none" />
           <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-brand-teal/40 rounded-full blur-3xl pointer-events-none" />
@@ -546,15 +544,17 @@ const Home = () => {
                 tırmanma tutacakları ve daha fazlası — 50+ kalem stoklu ve aynı gün sevk.
               </p>
               <div className="flex flex-wrap items-center gap-3">
-                <span className="inline-flex items-center gap-2 bg-white text-slate-900 font-black px-6 py-3 rounded-full text-sm shadow-md group-hover:scale-105 transition-transform">
-                  Yedek Parçaları İncele <ArrowRight size={16} />
-                </span>
+                {/* Büyüme efekti içteki span'de: bağlantıya transform verilirse ::after katmanı düğme boyutuna küçülür */}
+                <Link to="/yedek-parcalar" className="rounded-full after:absolute after:inset-0 after:z-10">
+                  <span className="inline-flex items-center gap-2 bg-white text-slate-900 font-black px-6 py-3 rounded-full text-sm shadow-md group-hover:scale-105 transition-transform">
+                    Yedek Parçaları İncele <ArrowRight size={16} />
+                  </span>
+                </Link>
                 <a
                   href="https://wa.me/905521065579"
                   target="_blank"
                   rel="noopener noreferrer"
-                  onClick={(e) => e.stopPropagation()}
-                  className="inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#1ebe57] text-white font-black px-6 py-3 rounded-full text-sm shadow-md"
+                  className="relative z-20 inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#1ebe57] text-white font-black px-6 py-3 rounded-full text-sm shadow-md"
                 >
                   WhatsApp ile Sor
                 </a>
@@ -575,7 +575,7 @@ const Home = () => {
               </div>
             </div>
           </div>
-        </Link>
+        </div>
       </section>
 
       {/* İmalat & Galeri promo */}
