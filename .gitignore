@@ -27,3 +27,6 @@ dist-ssr
 .env.local
 .env.production
 package-lock.json
+
+# build öncesi üretilen ürün verisi kopyası (scripts/generate-product-data.mjs)
+public/data/

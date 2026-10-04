@@ -9,6 +9,30 @@ import { breadcrumbJsonLd, toMetaDescription, useJsonLd, useNoIndex } from '../l
 import { postForCategory } from '../data/posts';
 import { usePosts } from '../lib/usePosts';
 import Thumb from '../components/Thumb';
+import { largeSrc, thumbSrc } from '../lib/thumb';
+
+// Metinden sabit bir sayı üretir (benzer ürünlerin sırası için)
+const mixHash = (text: string) => {
+  let h = 2166136261;
+  for (let i = 0; i < text.length; i++) h = Math.imul(h ^ text.charCodeAt(i), 16777619);
+  return h >>> 0;
+};
+
+// Ana görsel: yerel ürün görsellerinde 720/1200px WebP kopyalar (ekrana göre seçilir); kopya yoksa orijinal.
+// Büyütme penceresi her zaman orijinali gösterir.
+const mainImageSources = (src: string) => {
+  const large = largeSrc(src);
+  if (!large) return { src };
+  return {
+    src: large,
+    srcSet: `${thumbSrc(src)} 720w, ${large} 1200w`,
+    sizes: '(min-width: 1024px) 560px, 100vw',
+    onError: (e: React.SyntheticEvent<HTMLImageElement>) => {
+      const img = e.currentTarget;
+      if (img.getAttribute('src') !== src) { img.removeAttribute('srcset'); img.src = src; }
+    },
+  };
+};
 
 const SUBCATS: { key: string; catKey: string; label: string; match: (s: string) => boolean }[] = [
   { key: 'tekli',    catKey: 'trambolinler', label: 'Tekli Trambolinler',             match: s => s.startsWith('tekli-') },
@@ -27,7 +51,7 @@ const SUBCAT_GUIDE: Record<string, string | null> = { tekli: null, fitness: null
 const ProductDetail = () => {
   const { slug } = useParams();
   const { product, loading } = useProduct(slug ?? '');
-  const { products: allProducts } = useProducts();
+  const { products: allProducts } = useProducts({ enabled: !loading }); // benzer ürünler, ana ürün gelince
   const posts = usePosts();
   const [activeImg, setActiveImg] = useState(0);
   const [zoomed, setZoomed] = useState(false);
@@ -97,9 +121,10 @@ const ProductDetail = () => {
     ? postForCategory(posts, product.categoryKey)
     : posts.find(p => p.slug === guideOverride);
 
+  // Her ürün sayfasında farklı ama sayfa yenilenene/veri güncellenene kadar sabit sıra
   const related = allProducts
     .filter(p => p.categoryKey === product.categoryKey && p.slug !== product.slug)
-    .sort(() => Math.random() - 0.5)
+    .sort((a, b) => mixHash(product.slug + a.slug) - mixHash(product.slug + b.slug))
     .slice(0, 3);
 
   // images boşsa image'ı fallback olarak kullan
@@ -191,7 +216,7 @@ const ProductDetail = () => {
                 loading={activeImg === 0 ? 'eager' : 'lazy'}
                 fetchPriority={activeImg === 0 ? 'high' : 'auto'}
                 decoding="async"
-                src={displayImages[activeImg]}
+                {...mainImageSources(displayImages[activeImg])}
                 alt={product.name}
                 className="w-full h-full object-contain p-4 pointer-events-none"
               />

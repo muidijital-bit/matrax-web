@@ -76,8 +76,9 @@ const SearchPanel = ({ open, onClose }: { open: boolean; onClose: () => void }) 
   const [dbSpareParts, setDbSpareParts] = useState<DbSparePart[]>([]);
   const [dataLoaded, setDataLoaded] = useState(false);
 
+  // Veri panel ilk açıldığında yüklenir (her sayfada boşuna indirilmesin)
   useEffect(() => {
-    if (dataLoaded) return;
+    if (!open || dataLoaded) return;
     Promise.all([
       supabase.from('products').select('*').eq('is_active', true),
       supabase.from('spare_categories').select('*').order('sort_order'),
@@ -88,7 +89,7 @@ const SearchPanel = ({ open, onClose }: { open: boolean; onClose: () => void }) 
       if (sp && sp.length > 0) setDbSpareParts(sp as DbSparePart[]);
       setDataLoaded(true);
     });
-  }, [dataLoaded]);
+  }, [open, dataLoaded]);
 
   useEffect(() => {
     if (!open) return;

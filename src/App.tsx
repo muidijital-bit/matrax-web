@@ -4,6 +4,11 @@ import Layout from './components/Layout';
 import Home from './pages/Home'; // ana sayfa eager — LCP
 import { useSiteSettings } from './lib/useSiteSettings';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { prefetchProduct } from './lib/useSupabaseData';
+
+// Ürün sayfasına doğrudan gelindiyse ürün verisi, sayfanın kodu inerken aynı anda istenir
+const productPath = window.location.pathname.match(/^\/katalog\/([^/]+)\/?$/);
+if (productPath) prefetchProduct(decodeURIComponent(productPath[1]));
 
 // Diğer sayfalar lazy: ilk yükleme bundle'ını küçültür
 const Catalog = lazy(() => import('./pages/Catalog'));

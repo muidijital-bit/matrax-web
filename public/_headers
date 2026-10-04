@@ -9,3 +9,7 @@
 
 /videos/*
   Cache-Control: public, max-age=604800
+
+# Ürün verisi kopyası: her yayında yenilenir; sayfa ayrıca veritabanından teyit eder
+/data/*
+  Cache-Control: public, max-age=300

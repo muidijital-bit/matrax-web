@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 /* Küçük görsel üretici:
  * - public/images altındaki her JPG/PNG için en fazla 720px genişlikte WebP kopya üretir
- * - Çıktı: public/images/_thumbs/<aynı yol, uzantı dahil>.webp — ör. products/a.png → _thumbs/products/a.png.webp
+ *   Çıktı: public/images/_thumbs/<aynı yol, uzantı dahil>.webp — ör. products/a.png → _thumbs/products/a.png.webp
+ * - Ürün görselleri (products/) için ayrıca 1200px kopya: public/images/_large/products/a.png.webp
+ *   (ürün sayfasındaki ana görsel; büyütme penceresi orijinali kullanır)
  * - Kopyası güncel olan görseller atlanır; yeni görsel ekledikten sonra tekrar çalıştırın
  * Kullanım: npm run thumbs
  */
@@ -11,9 +13,10 @@ import { join, relative, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = fileURLToPath(new URL('../public/images/', import.meta.url));
-const OUT = join(ROOT, '_thumbs');
-const MAX_WIDTH = 720;
-const QUALITY = 74;
+const SIZES = [
+  { dir: '_thumbs', width: 720, quality: 74, include: () => true },
+  { dir: '_large', width: 1200, quality: 76, include: rel => rel.startsWith('products/') },
+];
 
 async function* walk(dir) {
   for (const entry of await readdir(dir, { withFileTypes: true })) {
@@ -30,27 +33,30 @@ async function* walk(dir) {
 let made = 0, skipped = 0, failed = 0, before = 0, after = 0;
 
 for await (const file of walk(ROOT)) {
-  const rel = relative(ROOT, file);
-  const target = join(OUT, rel + '.webp');
+  const rel = relative(ROOT, file).split('\\').join('/');
   const src = await stat(file);
-  try {
-    const existing = await stat(target);
-    if (existing.mtimeMs >= src.mtimeMs) { skipped++; continue; }
-  } catch { /* henüz üretilmemiş */ }
+  for (const size of SIZES) {
+    if (!size.include(rel)) continue;
+    const target = join(ROOT, size.dir, rel + '.webp');
+    try {
+      const existing = await stat(target);
+      if (existing.mtimeMs >= src.mtimeMs) { skipped++; continue; }
+    } catch { /* henüz üretilmemiş */ }
 
-  try {
-    await mkdir(dirname(target), { recursive: true });
-    const info = await sharp(file, { failOn: 'none' })
-      .rotate()
-      .resize({ width: MAX_WIDTH, withoutEnlargement: true })
-      .webp({ quality: QUALITY, alphaQuality: 80 })
-      .toFile(target);
-    made++;
-    before += src.size;
-    after += info.size;
-  } catch (e) {
-    failed++;
-    console.warn(`Atlandı: ${rel} (${e.message})`);
+    try {
+      await mkdir(dirname(target), { recursive: true });
+      const info = await sharp(file, { failOn: 'none' })
+        .rotate()
+        .resize({ width: size.width, withoutEnlargement: true })
+        .webp({ quality: size.quality, alphaQuality: 80 })
+        .toFile(target);
+      made++;
+      before += src.size;
+      after += info.size;
+    } catch (e) {
+      failed++;
+      console.warn(`Atlandı: ${size.dir}/${rel} (${e.message})`);
+    }
   }
 }
 

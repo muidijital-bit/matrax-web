@@ -1,11 +1,5 @@
 import type { ImgHTMLAttributes, SyntheticEvent } from 'react';
-
-// Yerel /images görselleri için önceden üretilmiş küçük WebP kopyası (npm run thumbs → public/images/_thumbs/<yol>.webp).
-// Panelden yüklenen (tam adresli) görseller olduğu gibi kullanılır.
-const thumbSrc = (src: string) =>
-  /^\/images\/(?!_thumbs\/)[^?#]+\.(jpe?g|png)$/i.test(src)
-    ? `/images/_thumbs/${src.slice('/images/'.length)}.webp`
-    : src;
+import { thumbSrc } from '../lib/thumb';
 
 // Kart ve küçük önizlemelerde kullanılır; kopya bulunamazsa orijinal görsele döner
 const Thumb = ({ src, onError, loading = 'lazy', decoding = 'async', ...rest }: ImgHTMLAttributes<HTMLImageElement> & { src: string }) => {

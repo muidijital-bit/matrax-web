@@ -53,24 +53,43 @@ const mapSpareCategories = (cats: DbSpareCategory[], parts: DbSparePart[]): Part
     };
   });
 
-export const useProducts = () => {
+// Sayfalar arasında gezinirken aynı veri tekrar indirilmesin; panelde yapılan değişiklikler en geç 1 dakikada görünür
+const CACHE_MS = 60_000;
+
+let productsRequest: { at: number; promise: Promise<Product[] | null> } | null = null;
+
+const loadProducts = () => {
+  if (!productsRequest || Date.now() - productsRequest.at > CACHE_MS) {
+    productsRequest = {
+      at: Date.now(),
+      promise: Promise.resolve(
+        supabase
+          .from('products')
+          .select('*')
+          .eq('is_active', true)
+          .order('sort_order')
+          .order('created_at', { ascending: false })
+      ).then(({ data }) => (data && data.length > 0 ? (data as DbProduct[]).map(mapProduct) : null)),
+    };
+  }
+  return productsRequest.promise;
+};
+
+// enabled=false iken istek atılmaz (ör. ürün sayfasında benzer ürünler, ana ürün gelene kadar beklesin)
+export const useProducts = ({ enabled = true }: { enabled?: boolean } = {}) => {
   const [products, setProducts] = useState<Product[]>(localProducts);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    supabase
-      .from('products')
-      .select('*')
-      .eq('is_active', true)
-      .order('sort_order')
-      .order('created_at', { ascending: false })
-      .then(({ data }) => {
-        if (data && data.length > 0) {
-          setProducts((data as DbProduct[]).map(mapProduct));
-        }
-        setLoading(false);
-      });
-  }, []);
+    if (!enabled) return;
+    let cancelled = false;
+    loadProducts().then(list => {
+      if (cancelled) return;
+      if (list) setProducts(list);
+      setLoading(false);
+    });
+    return () => { cancelled = true; };
+  }, [enabled]);
 
   return { products, loading };
 };
@@ -121,29 +140,58 @@ export const useSpareCategories = () => {
   return { spareCategories, loading };
 };
 
+// Tek ürün. Bilgi önce sitenin kendi sunucusundaki kopyadan (build'de üretilir, scripts/generate-product-data.mjs)
+// alınır, ardından veritabanından teyit edilir; panelde yapılan değişiklikler böylece yine görünür.
+// Ürün sayfasına doğrudan gelindiğinde App.tsx bunu sayfa kodu inerken başlatır.
+type ProductEntry = {
+  at: number;
+  first: Promise<Product | null>;  // kopya ya da veritabanı, hangisi önce gelirse
+  final: Promise<Product | null>;  // veritabanı (yoksa yerel veri)
+  result?: Product | null;
+};
+const productRequests = new Map<string, ProductEntry>();
+
+const fetchProductSnapshot = (slug: string): Promise<Product | null> =>
+  fetch(`/data/products/${encodeURIComponent(slug)}.json`)
+    .then(r => (r.ok && (r.headers.get('content-type') ?? '').includes('json') ? r.json() : null))
+    .then(row => (row ? mapProduct(row as DbProduct) : null))
+    .catch(() => null);
+
+export const prefetchProduct = (slug: string) => {
+  const cached = productRequests.get(slug);
+  if (cached && Date.now() - cached.at <= CACHE_MS) return cached;
+
+  const localFallback = () => localProducts.find(p => p.slug === slug) ?? null;
+  const final = Promise.resolve(supabase.from('products').select('*').eq('slug', slug).maybeSingle())
+    .then(({ data }) => (data ? mapProduct(data as DbProduct) : localFallback()), localFallback);
+  const snapshot = fetchProductSnapshot(slug);
+  const first = new Promise<Product | null>(resolve => {
+    snapshot.then(p => { if (p) resolve(p); });
+    final.then(resolve);
+  });
+
+  const entry: ProductEntry = { at: Date.now(), first, final };
+  final.then(result => { entry.result = result; });
+  productRequests.set(slug, entry);
+  return entry;
+};
+
 export const useProduct = (slug: string) => {
-  const [product, setProduct] = useState<Product | null>(null);
-  const [loading, setLoading] = useState(true);
+  // Veri önceden geldiyse (ör. geri dönüşte) yükleniyor durumu hiç gösterilmez
+  const [state, setState] = useState<{ slug: string; product: Product | null } | null>(() => {
+    const cached = productRequests.get(slug);
+    return cached && cached.result !== undefined ? { slug, product: cached.result } : null;
+  });
 
   useEffect(() => {
-    setLoading(true);
-    setProduct(null);
-    supabase
-      .from('products')
-      .select('*')
-      .eq('slug', slug)
-      .maybeSingle()
-      .then(({ data }) => {
-        if (data) {
-          setProduct(mapProduct(data as DbProduct));
-        } else {
-          // Fallback: local data
-          const local = localProducts.find(p => p.slug === slug) ?? null;
-          setProduct(local);
-        }
-        setLoading(false);
-      });
+    let cancelled = false;
+    let finalArrived = false;
+    const { first, final } = prefetchProduct(slug);
+    first.then(product => { if (!cancelled && !finalArrived) setState({ slug, product }); });
+    final.then(product => { finalArrived = true; if (!cancelled) setState({ slug, product }); });
+    return () => { cancelled = true; };
   }, [slug]);
 
-  return { product, loading };
+  const settled = state?.slug === slug;
+  return { product: settled ? state.product : null, loading: !settled };
 };
