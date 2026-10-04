@@ -51,10 +51,11 @@ const updateSchemaOrg = (settings: Record<string, string>) => {
 
   const name  = settings['business_name']  || 'Matrax Oyun Grupları';
   const url   = settings['site_url']        || 'https://matraxoyungruplari.com';
-  const phone = settings['business_phone']  || '';
-  const email = settings['business_email']  || '';
+  // Panelde boş bırakılan alanlar için index.html'deki bilgiler kullanılır
+  const phone = settings['business_phone']  || '+90-552-106-55-79';
+  const email = settings['business_email']  || 'info@matraxoyungruplari.com';
   const city  = settings['business_city']   || 'Ankara';
-  const addr  = settings['business_address']|| '';
+  const addr  = (settings['business_address'] || 'İvedik Osb 1372 Sok. No. 33/2, Yenimahalle').replace(/\s+/g, ' ').trim();
   const year  = settings['business_founding_year'] || '2005';
   const ig    = settings['instagram_url']   || '';
   const yt    = settings['youtube_url']     || '';
@@ -62,7 +63,8 @@ const updateSchemaOrg = (settings: Record<string, string>) => {
   const image = settings['og_image']        || `${url}/images/hero.jpg`;
   const desc  = settings['meta_description']|| '';
 
-  const sameAs = [ig, yt].filter(Boolean);
+  // Paylaşım takip parametreleri (?igsh=...) adresten çıkarılır
+  const sameAs = [ig, yt].filter(Boolean).map(u => u.split('?')[0]);
 
   const schema = {
     '@context': 'https://schema.org',

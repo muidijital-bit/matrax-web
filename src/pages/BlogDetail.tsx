@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, ArrowRight, Clock, Calendar, Lightbulb, Phone, ExternalLink, ChevronRight } from 'lucide-react';
 import { Link, Navigate, useParams } from 'react-router-dom';
@@ -7,8 +6,9 @@ import type { PostBlock } from '../data/postBodies';
 import { usePosts } from '../lib/usePosts';
 import { usePost } from '../lib/usePost';
 import { usePageMeta } from '../lib/usePageMeta';
+import { SITE_URL, breadcrumbJsonLd, useJsonLd, useNoIndex } from '../lib/seo';
+import Thumb from '../components/Thumb';
 
-const SITE_URL = 'https://matraxoyungruplari.com';
 const absoluteUrl = (path: string) => (path.startsWith('/') ? `${SITE_URL}${path}` : path);
 
 // [metin](/yol) biçimindeki bağlantıları çözer; site içi yollar Link, diğerleri yeni sekmede açılır
@@ -81,52 +81,39 @@ const BlogDetail = () => {
   );
 
   // Arama motorları için yapılandırılmış veri (yazı + sayfa yolu)
-  useEffect(() => {
-    if (!post) return;
-    const url = `${SITE_URL}/blog/${post.slug}`;
-    const data = [
-      {
-        '@context': 'https://schema.org',
-        '@type': 'Article',
-        headline: post.title,
-        description: post.excerpt,
-        ...(post.image && { image: [absoluteUrl(post.image)] }),
-        datePublished: post.date,
-        dateModified: post.date,
-        articleSection: post.category,
-        ...(post.keywords && { keywords: post.keywords }),
-        author: { '@type': 'Organization', name: 'Matrax Oyun Grupları', url: SITE_URL },
-        publisher: {
-          '@type': 'Organization',
-          name: 'Matrax Oyun Grupları',
-          logo: { '@type': 'ImageObject', url: `${SITE_URL}/images/logo.png` },
-        },
-        mainEntityOfPage: { '@type': 'WebPage', '@id': url },
+  useJsonLd('post-jsonld', post ? [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Article',
+      headline: post.title,
+      description: post.excerpt,
+      ...(post.image && { image: [absoluteUrl(post.image)] }),
+      datePublished: post.date,
+      dateModified: post.date,
+      articleSection: post.category,
+      ...(post.keywords && { keywords: post.keywords }),
+      author: { '@type': 'Organization', name: 'Matrax Oyun Grupları', url: SITE_URL },
+      publisher: {
+        '@type': 'Organization',
+        name: 'Matrax Oyun Grupları',
+        logo: { '@type': 'ImageObject', url: `${SITE_URL}/images/logo.png` },
       },
-      {
-        '@context': 'https://schema.org',
-        '@type': 'BreadcrumbList',
-        itemListElement: [
-          { '@type': 'ListItem', position: 1, name: 'Ana Sayfa', item: `${SITE_URL}/` },
-          { '@type': 'ListItem', position: 2, name: 'Blog', item: `${SITE_URL}/blog` },
-          { '@type': 'ListItem', position: 3, name: post.title, item: url },
-        ],
-      },
-    ];
-    const script = document.createElement('script');
-    script.type = 'application/ld+json';
-    script.id = 'post-jsonld';
-    script.textContent = JSON.stringify(data);
-    document.head.appendChild(script);
-    return () => script.remove();
-  }, [post]);
+      mainEntityOfPage: { '@type': 'WebPage', '@id': `${SITE_URL}/blog/${post.slug}` },
+    },
+    breadcrumbJsonLd([
+      { name: 'Ana Sayfa', path: '/' },
+      { name: 'Blog', path: '/blog' },
+      { name: post.title, path: `/blog/${post.slug}` },
+    ]),
+  ] : null);
+  useNoIndex(!loading && !post && !(slug && movedPosts[slug]));
 
   // Kaldırılan yazıların eski adresleri yerine geçen yazıya yönlenir
   if (slug && movedPosts[slug]) return <Navigate to={`/blog/${movedPosts[slug]}`} replace />;
 
   if (loading) {
     return (
-      <div className="min-h-[60vh] flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="w-10 h-10 border-4 border-slate-200 border-t-brand-pink rounded-full animate-spin" />
       </div>
     );
@@ -261,7 +248,7 @@ const BlogDetail = () => {
                   >
                     {r.image && (
                       <div className="w-24 flex-shrink-0 overflow-hidden bg-slate-100">
-                        <img loading="lazy" decoding="async" src={r.image} alt={r.title}
+                        <Thumb src={r.image} alt={r.title}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                       </div>
                     )}

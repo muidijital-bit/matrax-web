@@ -36,7 +36,7 @@ const Login = () => {
         {/* Logo */}
         <div className="text-center mb-8">
           <img
-            src="/images/logo.png?v=4"
+            src="/images/logo-192.png"
             alt="Matrax"
             className="h-20 w-auto object-contain mx-auto drop-shadow-xl"
           />

@@ -5,8 +5,10 @@ import { ChevronLeft, Phone, ChevronRight, ZoomIn, X } from 'lucide-react';
 import { categoryBadge } from '../data/products';
 import { useProduct, useProducts } from '../lib/useSupabaseData';
 import { usePageMeta } from '../lib/usePageMeta';
+import { breadcrumbJsonLd, toMetaDescription, useJsonLd, useNoIndex } from '../lib/seo';
 import { postForCategory } from '../data/posts';
 import { usePosts } from '../lib/usePosts';
+import Thumb from '../components/Thumb';
 
 const SUBCATS: { key: string; catKey: string; label: string; match: (s: string) => boolean }[] = [
   { key: 'tekli',    catKey: 'trambolinler', label: 'Tekli Trambolinler',             match: s => s.startsWith('tekli-') },
@@ -35,9 +37,16 @@ const ProductDetail = () => {
 
   usePageMeta(
     product ? `${product.name} | Matrax Oyun Grupları` : 'Ürün | Matrax Oyun Grupları',
-    product?.desc ?? 'Matrax Oyun Grupları — EN-1176 sertifikalı trambolin parkı ve oyun grubu üreticisi.',
+    product?.desc ? toMetaDescription(product.desc) : 'Matrax Oyun Grupları — EN-1176 sertifikalı trambolin parkı ve oyun grubu üreticisi.',
     product ? `${product.name}, ${product.category}, matrax` : undefined
   );
+  useNoIndex(!loading && !product);
+  useJsonLd('product-breadcrumb', product ? breadcrumbJsonLd([
+    { name: 'Ana Sayfa', path: '/' },
+    { name: 'Ürünler', path: '/katalog' },
+    { name: product.category, path: `/katalog?kategori=${product.categoryKey}` },
+    { name: product.name, path: `/katalog/${product.slug}` },
+  ]) : null);
 
   useLayoutEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
@@ -67,7 +76,7 @@ const ProductDetail = () => {
 
   if (loading) {
     return (
-      <div className="max-w-7xl mx-auto px-6 py-20 flex justify-center">
+      <div className="min-h-screen max-w-7xl mx-auto px-6 py-20 flex justify-center">
         <div className="w-10 h-10 border-4 border-slate-200 border-t-brand-pink rounded-full animate-spin" />
       </div>
     );
@@ -179,7 +188,8 @@ const ProductDetail = () => {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.25 }}
-                loading="lazy"
+                loading={activeImg === 0 ? 'eager' : 'lazy'}
+                fetchPriority={activeImg === 0 ? 'high' : 'auto'}
                 decoding="async"
                 src={displayImages[activeImg]}
                 alt={product.name}
@@ -228,7 +238,7 @@ const ProductDetail = () => {
                     activeImg === i ? 'border-neon-pink' : 'border-slate-100 hover:border-slate-300'
                   }`}
                 >
-                  <img loading="lazy" decoding="async" src={img} alt="" className="w-full h-full object-contain p-1" />
+                  <Thumb src={img} alt={`${product.name} — görsel ${i + 1}`} className="w-full h-full object-contain p-1" />
                 </button>
               ))}
             </div>
@@ -311,9 +321,8 @@ const ProductDetail = () => {
           className="mt-12 flex items-center gap-4 md:gap-6 bg-white rounded-[2rem] border-2 border-slate-100 hover:border-slate-200 hover:shadow-xl transition-all group overflow-hidden p-3 md:p-4"
         >
           {guide.image && (
-            <img
-              loading="lazy" decoding="async"
-              src={guide.image} alt=""
+            <Thumb
+              src={guide.image} alt={guide.title}
               className="w-24 h-20 md:w-40 md:h-28 rounded-2xl object-cover flex-shrink-0"
             />
           )}
@@ -349,8 +358,7 @@ const ProductDetail = () => {
                 className="bg-white rounded-[2rem] border-2 border-slate-100 hover:border-slate-200 hover:shadow-xl transition-all group overflow-hidden"
               >
                 <div className="aspect-[4/3] overflow-hidden bg-slate-50">
-                  <img
-                    loading="lazy" decoding="async"
+                  <Thumb
                     src={p.image} alt={p.name}
                     className="w-full h-full object-contain p-3 group-hover:scale-105 transition-transform duration-500"
                   />

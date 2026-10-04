@@ -6,6 +6,7 @@ import { products as localProducts } from '../data/products';
 import { spareCategories as localSpareCategories } from '../data/spareParts';
 import { supabase } from '../lib/supabase';
 import type { DbProduct, DbSpareCategory, DbSparePart } from '../lib/types';
+import Thumb from './Thumb';
 
 type Hit = {
   type: 'product' | 'spare';
@@ -299,7 +300,7 @@ const SearchPanel = ({ open, onClose }: { open: boolean; onClose: () => void }) 
                     >
                       <div className="w-11 h-11 md:w-16 md:h-16 flex-shrink-0 rounded-xl bg-slate-100 overflow-hidden flex items-center justify-center">
                         {hit.image ? (
-                          <img src={hit.image} alt={hit.title} loading="lazy" className="w-full h-full object-contain p-1" />
+                          <Thumb src={hit.image} alt={hit.title} className="w-full h-full object-contain p-1" />
                         ) : (
                           <Wrench size={22} className="text-slate-400" />
                         )}

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MapPin, Calendar, ArrowUpRight, Briefcase, X } from 'lucide-react';
 import { usePageMeta } from '../lib/usePageMeta';
+import Thumb from '../components/Thumb';
 
 const filters = ['Tümü', 'Trambolin Parkı', 'Soft Play', 'Kreş & Kafe', 'Top Havuzu'];
 
@@ -228,7 +229,7 @@ const Projects = () => {
                 onClick={() => setSelected(project)}
               >
                 <div className="relative aspect-[16/10] overflow-hidden">
-                  <img loading="lazy" decoding="async"
+                  <Thumb
                     src={project.image}
                     alt={project.name}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"

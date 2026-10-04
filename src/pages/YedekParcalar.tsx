@@ -9,6 +9,7 @@ import {
 import { type SparePart } from '../data/spareParts';
 import { useSpareCategories } from '../lib/useSupabaseData';
 import { usePageMeta } from '../lib/usePageMeta';
+import Thumb from '../components/Thumb';
 
 const tr = (s: string) => (s ?? '').toLocaleLowerCase('tr');
 const splitWords = (s: string) => tr(s).split(/[\s,.()\-\/]+/).filter(Boolean);
@@ -260,7 +261,7 @@ const YedekParcalar = () => {
                           >
                             <div className="w-16 h-16 flex-shrink-0 rounded-xl bg-slate-100 overflow-hidden flex items-center justify-center">
                               {hit.image ? (
-                                <img src={hit.image} alt={hit.title} loading="lazy" className="w-full h-full object-contain p-1.5" />
+                                <Thumb src={hit.image} alt={hit.title} className="w-full h-full object-contain p-1.5" />
                               ) : (
                                 <Wrench size={22} className="text-slate-400" />
                               )}
@@ -343,10 +344,9 @@ const YedekParcalar = () => {
                   aria-expanded={isOpen}
                 >
                   <div className="relative w-20 h-20 md:w-24 md:h-24 flex-shrink-0 rounded-2xl bg-slate-50 overflow-hidden">
-                    <img
+                    <Thumb
                       src={cat.cover}
                       alt={cat.title}
-                      loading="lazy"
                       decoding="async"
                       className="w-full h-full object-contain p-2"
                     />
@@ -435,10 +435,10 @@ const YedekParcalar = () => {
             </div>
             <div className="hidden md:flex justify-end">
               <div className="grid grid-cols-2 gap-3 max-w-sm">
-                <img decoding="async" src="/images/yedek-parca/yay-25cm.png" alt="" className="aspect-square object-contain bg-white/15 backdrop-blur-md rounded-2xl p-3" />
-                <img decoding="async" src="/images/yedek-parca/pad-real-1.jpg" alt="" className="aspect-square object-cover bg-white/15 backdrop-blur-md rounded-2xl" />
-                <img decoding="async" src="/images/yedek-parca/sunger-10cm.png" alt="" className="aspect-square object-contain bg-white/15 backdrop-blur-md rounded-2xl p-3" />
-                <img decoding="async" src="/images/yedek-parca/file-real-1.jpg" alt="" className="aspect-square object-cover bg-white/15 backdrop-blur-md rounded-2xl" />
+                <Thumb loading="eager" src="/images/yedek-parca/yay-25cm.png" alt="Trambolin yayı" className="aspect-square object-contain bg-white/15 backdrop-blur-md rounded-2xl p-3" />
+                <Thumb loading="eager" src="/images/yedek-parca/pad-real-1.jpg" alt="Trambolin koruma padi" className="aspect-square object-cover bg-white/15 backdrop-blur-md rounded-2xl" />
+                <Thumb loading="eager" src="/images/yedek-parca/sunger-10cm.png" alt="Yedek sünger" className="aspect-square object-contain bg-white/15 backdrop-blur-md rounded-2xl p-3" />
+                <Thumb loading="eager" src="/images/yedek-parca/file-real-1.jpg" alt="Trambolin koruma filesi" className="aspect-square object-cover bg-white/15 backdrop-blur-md rounded-2xl" />
               </div>
             </div>
           </div>
@@ -476,10 +476,9 @@ const SparePartCard = ({
         className="relative aspect-[4/3] bg-white overflow-hidden cursor-zoom-in group"
       >
         {images[0] ? (
-          <img
+          <Thumb
             src={images[0]}
             alt={item.title}
-            loading="lazy"
             decoding="async"
             className="w-full h-full object-contain p-3 group-hover:scale-105 transition-transform duration-500"
           />

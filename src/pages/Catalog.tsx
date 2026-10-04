@@ -5,6 +5,8 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { categoryBadge, type Product } from '../data/products';
 import { useProducts, useCategories } from '../lib/useSupabaseData';
 import { usePageMeta } from '../lib/usePageMeta';
+import { breadcrumbJsonLd, useJsonLd } from '../lib/seo';
+import Thumb from '../components/Thumb';
 
 // Catalog bileşeni içinde hook ile yüklenir; bu satır kaldırıldı
 
@@ -122,6 +124,11 @@ const Catalog = () => {
       : 'Trambolinler, top havuzları, soft play oyuncakları, trambolin parkları ve şişme parklar. EN-1176 sertifikalı tüm ürünlerimizi inceleyin.'),
     catMeta?.keywords ?? 'trambolin kataloğu, soft play katalog, oyun grubu fiyat, trambolin parkı satın al'
   );
+  useJsonLd('category-breadcrumb', activeCat ? breadcrumbJsonLd([
+    { name: 'Ana Sayfa', path: '/' },
+    { name: 'Ürünler', path: '/katalog' },
+    { name: activeCat.name, path: `/katalog?kategori=${activeCat.key}` },
+  ]) : null);
   const [activeSub, setActiveSub] = useState(initialSub);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [mobilePending, setMobilePending] = useState<string>('');
@@ -520,7 +527,7 @@ const ProductCard = ({
       className="block bg-white rounded-[2rem] border-2 border-slate-100 hover:border-slate-200 hover:shadow-2xl transition-all group cursor-pointer overflow-hidden"
     >
       <div className="relative aspect-[4/3] overflow-hidden bg-slate-50">
-        <img loading="lazy" decoding="async"
+        <Thumb
           src={product.image}
           alt={product.name}
           className="w-full h-full object-contain p-3 group-hover:scale-105 transition-transform duration-500 ease-out"

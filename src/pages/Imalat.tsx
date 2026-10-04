@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronLeft, ChevronRight, Hammer, Cog, Layers, Shield, Sparkles, Truck } from 'lucide-react';
 import { usePageMeta } from '../lib/usePageMeta';
+import Thumb from '../components/Thumb';
 
 const images = Array.from({ length: 15 }, (_, i) => `/images/imalat/imalat-${i + 1}.jpg`);
 
@@ -106,10 +107,9 @@ const Imalat = () => {
                 onClick={() => setActive(i)}
                 className="relative aspect-square rounded-2xl overflow-hidden bg-slate-100 group cursor-zoom-in shadow-sm hover:shadow-xl transition-shadow"
               >
-                <img
+                <Thumb
                   src={src}
                   alt={`İmalat aşaması ${i + 1}`}
-                  loading="lazy"
                   decoding="async"
                   className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 />

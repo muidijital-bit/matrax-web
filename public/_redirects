@@ -1,0 +1,17 @@
+# Cloudflare kalıcı yönlendirmeleri (301). Uygulama da aynı adresleri tarayıcıda yönlendirir.
+
+# Eski sitemap'teki ürün adresleri; adı değişen ürünler önce
+/urun/ticari-olimpik-trambolin-1-kisilik    /katalog/ticari-olimpik-trambolin-1-kisilik-ic-dis-mekan    301
+/urun/roller-kaydirak-soft-play             /katalog/roller-kaydirak-soft-play-ic-mekan-cafe-restoran-cocuk-oyun-alani    301
+/urun/standart-top-havuzu                   /katalog/standart-ticari-top-havuzu    301
+/urun/tekli-yuvarlak-trambolin              /katalog/tekli-top-havuzlu-trambolin    301
+/katalog/ticari-olimpik-trambolin-1-kisilik /katalog/ticari-olimpik-trambolin-1-kisilik-ic-dis-mekan    301
+/katalog/roller-kaydirak-soft-play          /katalog/roller-kaydirak-soft-play-ic-mekan-cafe-restoran-cocuk-oyun-alani    301
+/katalog/standart-top-havuzu                /katalog/standart-ticari-top-havuzu    301
+/katalog/tekli-yuvarlak-trambolin           /katalog/tekli-top-havuzlu-trambolin    301
+/urun/*                                     /katalog/:splat    301
+
+# Kaldırılan blog yazıları
+/blog/trambolin-parki-nasil-kurulur    /blog/ticari-trambolin      301
+/blog/soft-play-malzeme-secimi         /blog/softplay-ureticisi    301
+/blog/kres-oyun-alani-tasarimi         /blog/cocuk-oyun-alani      301

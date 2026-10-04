@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { Clock, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { formatPostDate, type Post } from '../data/posts';
+import Thumb from './Thumb';
 
 // Blog listesi ve ana sayfadaki yazı kartı
 const PostCard = ({ post, index = 0, titleAs: Title = 'h2' }: { post: Post; index?: number; titleAs?: 'h2' | 'h3' }) => (
@@ -13,7 +14,7 @@ const PostCard = ({ post, index = 0, titleAs: Title = 'h2' }: { post: Post; inde
   >
     <Link to={`/blog/${post.slug}`} tabIndex={-1} aria-hidden="true" className="block relative aspect-[16/9] overflow-hidden bg-gradient-to-br from-slate-800 to-brand-navy">
       {post.image && (
-        <img loading="lazy" decoding="async"
+        <Thumb
           src={post.image}
           alt={post.title}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"

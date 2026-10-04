@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronRight, ArrowRight, ArrowUpRight, Phone, Mail, MapPin, Hammer, Camera, Calendar, Wrench } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -7,11 +7,39 @@ import { usePageMeta } from '../lib/usePageMeta';
 import { supabase } from '../lib/supabase';
 import { usePosts } from '../lib/usePosts';
 import PostCard from '../components/PostCard';
+import Thumb from '../components/Thumb';
 
 const HERO_IMAGE = '/images/galeri-yeni/galeri-1.jpg';
-const HERO_VIDEO = '/videos/hero.mp4';
-// Video dosyası /public/videos/hero.mp4 konunca HERO_HAS_VIDEO = true yapın (1920x1080 önerilir)
+const HERO_VIDEO = '/videos/hero-1280.mp4';
+const HERO_POSTER = '/images/hero-poster.jpg'; // videonun ilk karesi; video yüklenene kadar görünür
 const HERO_HAS_VIDEO = true;
+
+// Video, sayfa yüklendikten sonra indirilir (ilk açılışı yavaşlatmasın); veri tasarrufu açıksa hiç indirilmez
+const HeroVideo = () => {
+  const ref = useRef<HTMLVideoElement>(null);
+  useEffect(() => {
+    const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData;
+    if (saveData) return;
+    const start = () => {
+      const video = ref.current;
+      if (!video || video.getAttribute('src')) return;
+      video.src = HERO_VIDEO;
+      video.play().catch(() => { /* otomatik oynatma engellendiyse kapak görseli kalır */ });
+    };
+    if (document.readyState === 'complete') start();
+    else window.addEventListener('load', start, { once: true });
+    return () => window.removeEventListener('load', start);
+  }, []);
+  return (
+    <video
+      ref={ref}
+      muted loop playsInline autoPlay
+      preload="none"
+      poster={HERO_POSTER}
+      className="absolute inset-0 w-full h-full object-cover scale-105"
+    />
+  );
+};
 
 const HeroSlider = () => {
   return (
@@ -19,12 +47,7 @@ const HeroSlider = () => {
 
       {/* Arka plan — video veya görsel */}
       {HERO_HAS_VIDEO ? (
-        <video
-          autoPlay muted loop playsInline
-          className="absolute inset-0 w-full h-full object-cover scale-105"
-        >
-          <source src={HERO_VIDEO} type="video/mp4" />
-        </video>
+        <HeroVideo />
       ) : (
         <img
           src={HERO_IMAGE}
@@ -222,7 +245,7 @@ const ProjectsSection = () => (
             className="block bg-white rounded-[2.5rem] p-4 border-2 border-slate-100 hover:border-slate-200 hover:shadow-2xl transition-all group cursor-pointer"
           >
             <div className="relative aspect-[4/3] rounded-[2rem] overflow-hidden mb-5">
-              <img decoding="async"
+              <Thumb
                 src={p.image}
                 alt={p.name}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
@@ -309,7 +332,7 @@ const Home = () => {
                   className="block bg-white rounded-[2.5rem] p-4 border-2 border-slate-100 hover:border-slate-200 hover:shadow-2xl transition-all group cursor-pointer"
                 >
                   <div className="relative aspect-[4/3] rounded-[2rem] overflow-hidden mb-5">
-                    <img decoding="async"
+                    <Thumb
                       src={cat.image}
                       alt={cat.name}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
@@ -384,7 +407,7 @@ const Home = () => {
                 className="block bg-white rounded-[2.5rem] p-4 border-2 border-slate-100 hover:border-slate-200 hover:shadow-2xl transition-all group cursor-pointer"
               >
                 <div className="relative aspect-[4/3] rounded-[2rem] overflow-hidden mb-5 bg-slate-50">
-                  <img decoding="async"
+                  <Thumb
                     src={cat.image}
                     alt={cat.name}
                     className="w-full h-full object-contain p-6 group-hover:scale-105 transition-transform duration-500"
@@ -440,7 +463,7 @@ const Home = () => {
                 className="h-full flex flex-col bg-white rounded-[2.5rem] p-4 border-2 border-slate-100 hover:border-slate-200 hover:shadow-2xl transition-all group cursor-pointer"
               >
                 <div className="relative aspect-[4/3] rounded-[2rem] overflow-hidden mb-5 bg-slate-50">
-                  <img decoding="async"
+                  <Thumb
                     src={product.image}
                     alt={product.name}
                     className="w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-500"
@@ -544,10 +567,10 @@ const Home = () => {
                   <Wrench size={220} strokeWidth={1.2} className="text-white/10" />
                 </div>
                 <div className="absolute inset-0 grid grid-cols-2 gap-3 p-4">
-                  <img loading="lazy" decoding="async" src="/images/yedek-parca/yay-25cm.png" alt="Trambolin yayı" className="rounded-2xl bg-white/15 backdrop-blur-md p-3 object-contain" />
-                  <img loading="lazy" decoding="async" src="/images/yedek-parca/pad-real-1.jpg" alt="Trambolin padi" className="rounded-2xl bg-white/15 backdrop-blur-md object-cover" />
-                  <img loading="lazy" decoding="async" src="/images/yedek-parca/sunger-10cm.png" alt="Yedek sünger" className="rounded-2xl bg-white/15 backdrop-blur-md p-3 object-contain" />
-                  <img loading="lazy" decoding="async" src="/images/yedek-parca/file-real-1.jpg" alt="Koruma filesi" className="rounded-2xl bg-white/15 backdrop-blur-md object-cover" />
+                  <Thumb src="/images/yedek-parca/yay-25cm.png" alt="Trambolin yayı" className="rounded-2xl bg-white/15 backdrop-blur-md p-3 object-contain" />
+                  <Thumb src="/images/yedek-parca/pad-real-1.jpg" alt="Trambolin padi" className="rounded-2xl bg-white/15 backdrop-blur-md object-cover" />
+                  <Thumb src="/images/yedek-parca/sunger-10cm.png" alt="Yedek sünger" className="rounded-2xl bg-white/15 backdrop-blur-md p-3 object-contain" />
+                  <Thumb src="/images/yedek-parca/file-real-1.jpg" alt="Koruma filesi" className="rounded-2xl bg-white/15 backdrop-blur-md object-cover" />
                 </div>
               </div>
             </div>
@@ -563,7 +586,7 @@ const Home = () => {
             to="/imalat"
             className="group relative rounded-[2rem] md:rounded-[2.5rem] overflow-hidden min-h-[260px] sm:min-h-[300px] md:min-h-[340px] flex shadow-xl hover:shadow-2xl transition-all"
           >
-            <img decoding="async" src="/images/imalat/imalat-1.jpg" alt="İmalat" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+            <Thumb src="/images/imalat/imalat-1.jpg" alt="İmalat" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
             <div className="absolute inset-0 bg-gradient-to-tr from-slate-900/95 via-slate-900/70 to-brand-pink/40" />
             <div className="relative z-10 p-6 md:p-10 flex flex-col justify-end text-white w-full">
               <span className="inline-flex items-center gap-2 self-start px-4 py-1.5 bg-white/15 backdrop-blur-md rounded-full font-black uppercase tracking-wider text-[10px] border border-white/20 mb-4">
@@ -584,7 +607,7 @@ const Home = () => {
             to="/galeri"
             className="group relative rounded-[2rem] md:rounded-[2.5rem] overflow-hidden min-h-[260px] sm:min-h-[300px] md:min-h-[340px] flex shadow-xl hover:shadow-2xl transition-all"
           >
-            <img decoding="async" src="/images/galeri-yeni/galeri-15.jpg" alt="Galeri" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+            <Thumb src="/images/galeri-yeni/galeri-15.jpg" alt="Galeri" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
             <div className="absolute inset-0 bg-gradient-to-tr from-brand-navy/95 via-brand-navy/70 to-brand-pink/40" />
             <div className="relative z-10 p-6 md:p-10 flex flex-col justify-end text-white w-full">
               <span className="inline-flex items-center gap-2 self-start px-4 py-1.5 bg-white/15 backdrop-blur-md rounded-full font-black uppercase tracking-wider text-[10px] border border-white/20 mb-4">

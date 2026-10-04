@@ -34,7 +34,7 @@ const AdminLayout = () => {
         {/* Logo */}
         <div className="flex items-center justify-center px-4 py-4 border-b border-white/10 flex-shrink-0">
           <img
-            src="/images/logo.png?v=4"
+            src="/images/logo-192.png"
             alt="Matrax"
             className="h-14 w-auto object-contain drop-shadow-lg"
           />

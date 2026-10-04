@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronLeft, ChevronRight, Camera } from 'lucide-react';
 import { usePageMeta } from '../lib/usePageMeta';
+import Thumb from '../components/Thumb';
 
 const allImages = [
   ...Array.from({ length: 28 }, (_, i) => `/images/galeri-yeni/galeri-${i + 1}.jpg`),
@@ -98,10 +99,9 @@ const Galeri = () => {
               onClick={() => setActive(i)}
               className="relative aspect-square rounded-2xl overflow-hidden bg-slate-100 group cursor-zoom-in shadow-sm hover:shadow-xl transition-shadow"
             >
-              <img
+              <Thumb
                 src={src}
                 alt={`Galeri ${i + 1}`}
-                loading="lazy"
                 decoding="async"
                 className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
               />

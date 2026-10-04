@@ -202,7 +202,7 @@ const Layout = () => {
             <img
               decoding="async"
               fetchPriority="high"
-              src="/images/logo.png?v=4"
+              src="/images/logo-192.png"
               alt="Matrax Oyun Grupları Logo"
               className={`h-16 md:h-[88px] w-auto object-contain transition-all duration-500 ${
                 isDark ? 'drop-shadow-[0_2px_16px_rgba(255,255,255,0.6)]' : ''
@@ -345,7 +345,7 @@ const Layout = () => {
 
             {/* Logo & açıklama */}
             <div className="lg:col-span-4">
-              <img loading="lazy" decoding="async" src="/images/logo.png?v=4" alt="Matrax Oyun Grupları" className="h-20 md:h-24 w-auto object-contain mb-5" />
+              <img loading="lazy" decoding="async" src="/images/logo-192.png" alt="Matrax Oyun Grupları" className="h-20 md:h-24 w-auto object-contain mb-5" />
               <p className="text-slate-300 font-bold text-sm leading-relaxed mb-6 max-w-sm">
                 Türkiye'nin dört bir yanında güvenli, sertifikalı ve uzun ömürlü oyun alanları tasarlıyor, üretiyor ve kuruyoruz. 20 yılı aşkın tecrübemizle her yaşa hitap eden çözümler sunuyoruz.
               </p>

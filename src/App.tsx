@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useParams } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
 import Layout from './components/Layout';
 import Home from './pages/Home'; // ana sayfa eager — LCP
@@ -18,6 +18,7 @@ const Blog = lazy(() => import('./pages/Blog'));
 const BlogDetail = lazy(() => import('./pages/BlogDetail'));
 const Kvkk = lazy(() => import('./pages/Kvkk'));
 const CerezPolitikasi = lazy(() => import('./pages/CerezPolitikasi'));
+const NotFound = lazy(() => import('./pages/NotFound'));
 
 // Admin sayfaları
 const AdminLogin = lazy(() => import('./admin/Login'));
@@ -29,8 +30,21 @@ const SpareParts = lazy(() => import('./admin/SpareParts'));
 const AdminPosts = lazy(() => import('./admin/Posts'));
 const AdminSettings = lazy(() => import('./admin/Settings'));
 
+// Eski sitemap'teki /urun/... adresleri (sunucuda public/_redirects ile 301; bu yedek tarayıcıda yönlendirir)
+const RENAMED_PRODUCTS: Record<string, string> = {
+  'ticari-olimpik-trambolin-1-kisilik': 'ticari-olimpik-trambolin-1-kisilik-ic-dis-mekan',
+  'roller-kaydirak-soft-play': 'roller-kaydirak-soft-play-ic-mekan-cafe-restoran-cocuk-oyun-alani',
+  'standart-top-havuzu': 'standart-ticari-top-havuzu',
+  'tekli-yuvarlak-trambolin': 'tekli-top-havuzlu-trambolin',
+};
+const OldProductRedirect = () => {
+  const { slug = '' } = useParams();
+  return <Navigate to={`/katalog/${RENAMED_PRODUCTS[slug] ?? slug}`} replace />;
+};
+
+// Sayfa yüklenirken footer görünür alana girmesin (içerik gelince kayma olmasın)
 const PageFallback = () => (
-  <div className="min-h-[60vh] flex items-center justify-center">
+  <div className="min-h-screen flex items-center justify-center">
     <div className="w-12 h-12 rounded-full border-4 border-slate-200 border-t-neon-pink animate-spin" />
   </div>
 );
@@ -61,6 +75,8 @@ function App() {
         <Route path="iletisim" element={<ErrorBoundary><Suspense fallback={<PageFallback />}><Contact /></Suspense></ErrorBoundary>} />
         <Route path="blog" element={<ErrorBoundary><Suspense fallback={<PageFallback />}><Blog /></Suspense></ErrorBoundary>} />
         <Route path="blog/:slug" element={<ErrorBoundary><Suspense fallback={<PageFallback />}><BlogDetail /></Suspense></ErrorBoundary>} />
+        <Route path="urun/:slug" element={<OldProductRedirect />} />
+        <Route path="*" element={<ErrorBoundary><Suspense fallback={<PageFallback />}><NotFound /></Suspense></ErrorBoundary>} />
       </Route>
 
       {/* Admin — login */}
